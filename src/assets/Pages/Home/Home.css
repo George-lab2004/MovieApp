@@ -1,0 +1,59 @@
+.text-flicker-gradient {
+  background: linear-gradient(90deg, #ff6ec4, #7873f5, #42a5f5, #ff6ec4);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  /* Combine both animations */
+  animation: gradientMove 8s ease infinite,
+    text-flicker-in-glow 6s linear both infinite;
+}
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+@keyframes text-flicker-in-glow {
+  0% {
+    opacity: 0;
+  }
+  6.66% {
+    opacity: 0;
+    text-shadow: none;
+  }
+  6.67% {
+    opacity: 1;
+    text-shadow: none;
+  }
+  6.68% {
+    opacity: 0;
+    text-shadow: none;
+  }
+  13.33% {
+    opacity: 0;
+    text-shadow: none;
+  }
+  13.34% {
+    opacity: 1;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.25);
+  }
+  14% {
+    opacity: 0;
+    text-shadow: none;
+  }
+  66.66% {
+    opacity: 1;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.6),
+      0 0 60px rgba(255, 255, 255, 0.45), 0 0 110px rgba(255, 255, 255, 0.25),
+      0 0 100px rgba(255, 255, 255, 0.1);
+  }
+  100% {
+    opacity: 1;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.6),
+      0 0 60px rgba(255, 255, 255, 0.45), 0 0 110px rgba(255, 255, 255, 0.25),
+      0 0 100px rgba(255, 255, 255, 0.1);
+  }
+}
