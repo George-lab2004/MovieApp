@@ -1,25 +1,47 @@
 import { memo, useEffect, useState } from "react";
 import Loader from "../Loader/Loader";
 
-const Hero = ({ fetchData, buttonText, onButtonClick }) => {
-  const [isLoading, setisLoading] = useState(true);
-  const [items, setItems] = useState([]);
-  const [featured, setFeatured] = useState(null);
+// Movie Item Type
+interface MovieItem {
+  id: number;
+  title?: string;
+  name?: string;
+  overview?: string;
+  backdrop_path?: string;
+  poster_path?: string;
+}
 
-  const getOverviewText = () => {
-    const words = featured?.overview?.split(" ") || [];
-    return window.innerWidth < 640
-      ? words.slice(0, 20).join(" ")
-      : words.slice(0, 38).join(" ");
-  };
+// Props Type
+interface HeroProps {
+  fetchData: () => Promise<{ data: { results: MovieItem[] } }>;
+  buttonText: string;
+  onButtonClick: () => void;
+}
+
+const Hero: React.FC<HeroProps> = ({
+  fetchData,
+  buttonText,
+  onButtonClick,
+}) => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [items, setItems] = useState<MovieItem[]>([]);
+  const [featured, setFeatured] = useState<MovieItem | null>(null);
 
   useEffect(() => {
     fetchData().then((response) => {
       setItems(response?.data.results);
       setFeatured(response?.data.results[0]);
-      setisLoading(false);
+      setIsLoading(false);
     });
   }, [fetchData]);
+
+  // Generate truncated overview text
+  const getOverviewText = (): string => {
+    const words = featured?.overview?.split(" ") || [];
+    return window.innerWidth < 640
+      ? words.slice(0, 20).join(" ")
+      : words.slice(0, 38).join(" ");
+  };
 
   return (
     <div className="relative w-screen overflow-x-scroll h-screen m-0 p-0 sm:min-h-[150vh] md:min-h-[110vh]">
@@ -35,12 +57,14 @@ const Hero = ({ fetchData, buttonText, onButtonClick }) => {
               backgroundImage: `url(https://image.tmdb.org/t/p/original${featured?.backdrop_path})`,
             }}
           >
-            {/* Featured Item Details */}
+            {/* Featured Content */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-left">
               <h1 className="text-4xl font-bold">
                 {featured?.title || featured?.name}
               </h1>
               <p className="text-lg">{getOverviewText()}...</p>
+
+              {/* Buttons */}
               <div className="flex flex-col justify-center items-center">
                 <div className="flex flex-wrap justify-center gap-4">
                   <button
@@ -59,7 +83,7 @@ const Hero = ({ fetchData, buttonText, onButtonClick }) => {
               </div>
             </div>
 
-            {/* Horizontal Scroll Container */}
+            {/* Small Image List */}
             <div className="relative w-full px-4 h-fit overflow-x-auto shadow-lg rounded-lg">
               <div className="flex gap-4 p-4">
                 {items.map((item) => (
@@ -70,10 +94,10 @@ const Hero = ({ fetchData, buttonText, onButtonClick }) => {
                     <img
                       src={`https://image.tmdb.org/t/p/original${item.poster_path}`}
                       onClick={() => {
-                        setisLoading(true);
+                        setIsLoading(true);
                         setTimeout(() => {
                           setFeatured(item);
-                          setisLoading(false);
+                          setIsLoading(false);
                         }, 500);
                       }}
                       alt={item.title || item.name}

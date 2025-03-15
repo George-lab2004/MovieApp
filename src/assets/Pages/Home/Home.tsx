@@ -1,5 +1,4 @@
 import { useCallback, useState } from "react";
-import axios from "axios";
 import Hero from "../../Components/Shared/Hero";
 import {
   axiosInstanceURL,

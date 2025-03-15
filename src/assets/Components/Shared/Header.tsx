@@ -1,4 +1,4 @@
-export default function Header({ title }) {
+export default function Header({ title }: { title: string }) {
   return (
     <>
       <h2 className="flex  hover:scale-105 flex-row flex-nowrap items-center mt-2 mb-2 text-2xl">
