@@ -29,3 +29,27 @@ body {
     clip-path: polygon(50% 0, 50% 0, 100% 100%, 0 100%);
   }
 }
+
+/* Add this to your global CSS */
+.scrollbar-custom::-webkit-scrollbar {
+  height: 8px; /* Adjust height for a thinner scrollbar */
+}
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: #1a1a1a; /* Dark background */
+  border-radius: 10px;
+}
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: #666; /* Lighter scrollbar thumb */
+  border-radius: 10px;
+}
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+.custom-height {
+  height: 100vh !important;
+}
+html,
+body {
+  height: 100%;
+  scrollbar-width: none;
+}

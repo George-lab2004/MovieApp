@@ -64,14 +64,14 @@ const Hero: React.FC<HeroProps> = ({
   };
 
   return (
-    <div className="relative w-screen overflow-x-scroll h-screen m-0 p-0 sm:min-h-[150vh] md:min-h-[110vh]">
+    <div className="relative w-full  custom-height m-0 p-0 overflow-hidden">
       {isLoading ? (
         <Loader />
       ) : (
         featured && (
           <div
-            className="w-full h-full bg-cover bg-center relative flex flex-col justify-start items-start overflow-x-hidden 
-              before:content-[''] before:w-screen before:h-screen before:flex-grow before:bg-gradient-to-b 
+            className="w-full h-full bg-cover bg-center relative flex flex-col justify-start items-start 
+              before:content-[''] before:w-full before:h-full before:flex-grow before:bg-gradient-to-b 
               before:from-black/70 before:to-transparent dark:before:bg-none dark:before:bg-black/50"
             style={{
               backgroundImage: `url(${backgroundImage})`,
@@ -113,7 +113,7 @@ const Hero: React.FC<HeroProps> = ({
             </div>
 
             {/* Small Image List */}
-            <div className="relative w-full px-4 h-fit overflow-x-auto shadow-lg rounded-lg">
+            <div className="relative w-full px-4 h-fit overflow-x-auto scrollbar-custom shadow-lg rounded-lg">
               <div className="flex gap-4 p-4">
                 {items.map((item) => (
                   <div
