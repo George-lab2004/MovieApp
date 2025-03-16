@@ -39,7 +39,7 @@ const Hero: React.FC<HeroProps> = ({
   // Load high-resolution image after component mounts
   useEffect(() => {
     if (featured?.backdrop_path) {
-      const lowResImage = `https://image.tmdb.org/t/p/w200${featured.backdrop_path}`;
+      const lowResImage = `https://image.tmdb.org/t/p/w500${featured.backdrop_path}`; // Use w500 for better performance
       const highResImage = `https://image.tmdb.org/t/p/original${featured.backdrop_path}`;
 
       // Set low-resolution image initially
@@ -64,7 +64,7 @@ const Hero: React.FC<HeroProps> = ({
   };
 
   return (
-    <div className="relative w-full  custom-height m-0 p-0 overflow-hidden">
+    <div className="relative w-full h-[100vh] m-0 p-0 overflow-hidden">
       {isLoading ? (
         <Loader />
       ) : (
@@ -88,7 +88,7 @@ const Hero: React.FC<HeroProps> = ({
 
               {/* Buttons */}
               <div className="flex flex-col justify-center items-center">
-                <div className="flex flex-wrap justify-center gap-4">
+                <div className="flex  justify-center gap-4">
                   <button
                     onClick={onButtonClick}
                     className="bg-blue-700 min-w-[150px] text-white px-4 py-2 mt-4 rounded-lg hover:bg-blue-600 transition-colors flex justify-center items-center whitespace-nowrap cursor-pointer"
@@ -121,7 +121,7 @@ const Hero: React.FC<HeroProps> = ({
                     className="flex-shrink-0 hover:scale-110 cursor-pointer transition-all w-[40vw] md:w-[12vw]"
                   >
                     <img
-                      src={`https://image.tmdb.org/t/p/original${item.poster_path}`}
+                      src={`https://image.tmdb.org/t/p/w500${item.poster_path}`} // Use w500 for better performance
                       onClick={() => {
                         setIsLoading(true);
                         setTimeout(() => {
@@ -132,6 +132,8 @@ const Hero: React.FC<HeroProps> = ({
                       alt={item.title || item.name}
                       className="w-full h-auto rounded-lg"
                       loading="lazy"
+                      width={500} // Explicit width
+                      height={750} // Explicit height
                     />
                   </div>
                 ))}
