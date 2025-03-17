@@ -8,18 +8,18 @@ import {
 } from "../../../Services/EndPoints/URLS";
 import Details from "../../Components/Details/Details";
 
-// Define types for series and Actor details
-interface seriesDetails {
+// Define types for Series and Actor details
+interface SeriesDetails {
   id: number;
   name: string;
-  title: string; // Optional for series
+  title?: string; // Optional for series
   overview: string;
   backdrop_path: string;
   poster_path: string;
   tagline: string;
   first_air_date: string;
   release_date?: string; // Optional for series
-  runtime?: number; // Optional for series
+  runtime?: number;
   number_of_episodes: number;
   number_of_seasons: number;
   genres: { id: number; name: string }[];
@@ -31,8 +31,8 @@ interface seriesDetails {
   production_countries: { name: string }[];
   original_language: string;
   imdb_id: string;
-  budget?: number; // Optional for series
-  revenue?: number; // Optional for series
+  budget?: number;
+  revenue?: number;
   vote_average: number;
 }
 
@@ -47,7 +47,7 @@ interface Actor {
 export default function SeriesDetailsPage() {
   const { id } = useParams<{ id: string }>(); // Ensure id is a string
 
-  const [seriesDetails, setseriesDetails] = useState<seriesDetails | null>(
+  const [seriesDetails, setSeriesDetails] = useState<SeriesDetails | null>(
     null
   );
   const [actors, setActors] = useState<Actor[]>([]);
@@ -61,7 +61,7 @@ export default function SeriesDetailsPage() {
       return;
     }
 
-    const fetchseriesData = async () => {
+    const fetchSeriesData = async () => {
       setLoading(true);
       setError(null);
       try {
@@ -69,9 +69,16 @@ export default function SeriesDetailsPage() {
           axiosInstanceURL.get(Detail.Series(id)),
           axiosInstanceURL.get(Actors.Series(id)),
         ]);
-        console.log(seriesResponse.data);
 
-        setseriesDetails(seriesResponse.data);
+        const seriesData = seriesResponse.data;
+
+        // Ensure required fields are always defined
+        setSeriesDetails({
+          ...seriesData,
+          release_date:
+            seriesData.release_date || seriesData.first_air_date || "Unknown",
+        } as SeriesDetails);
+
         setActors(actorResponse.data.cast || []);
       } catch (error) {
         console.error("Error fetching series details:", error);
@@ -81,13 +88,13 @@ export default function SeriesDetailsPage() {
       }
     };
 
-    fetchseriesData();
+    fetchSeriesData();
   }, [id]);
 
   if (loading) return <Loader />;
   if (error) return <p className="text-center text-red-500">{error}</p>;
   if (!seriesDetails)
-    return <p className="text-center text-red-500">series not found.</p>;
+    return <p className="text-center text-red-500">Series not found.</p>;
 
   return <Details item={seriesDetails} actors={actors} />;
 }

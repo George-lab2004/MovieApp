@@ -11,17 +11,17 @@ import Details from "../../Components/Details/Details";
 // Define types for Movie and Actor details
 interface MovieDetails {
   id: number;
-  title: string; // Optional, because TV shows use `name`
-  name: string; // Ensure name is always a string
+  title: string; // Ensure this is always a string
+  name?: string;
   overview: string;
   backdrop_path: string;
   poster_path: string;
   tagline: string;
-  release_date?: string; // Optional, because TV shows use `first_air_date`
-  first_air_date?: string; // Optional, because movies use `release_date`
-  runtime?: number; // Optional, since TV shows don't have runtime
-  number_of_episodes?: number; // For TV shows
-  number_of_seasons?: number; // For TV shows
+  release_date: string; // Ensure this is always a string
+  first_air_date?: string;
+  runtime?: number;
+  number_of_episodes?: number;
+  number_of_seasons?: number;
   genres: { id: number; name: string }[];
   production_companies: {
     id: number;
@@ -31,8 +31,8 @@ interface MovieDetails {
   production_countries: { name: string }[];
   original_language: string;
   imdb_id: string;
-  budget?: number; // Optional, since TV shows don't have a budget
-  revenue?: number; // Optional, since TV shows don't have revenue
+  budget?: number;
+  revenue?: number;
   vote_average: number;
 }
 
@@ -68,7 +68,16 @@ export default function MoviesDetailsPage() {
           axiosInstanceURL.get(Actors.Movie(id)),
         ]);
 
-        setMovieDetails(movieResponse.data);
+        const movieData = movieResponse.data;
+
+        // Ensure required fields are always defined
+        setMovieDetails({
+          ...movieData,
+          title: movieData.title || movieData.name || "Untitled",
+          release_date:
+            movieData.release_date || movieData.first_air_date || "Unknown",
+        } as MovieDetails);
+
         setActors(actorResponse.data.cast || []);
       } catch (error) {
         console.error("Error fetching movie details:", error);
