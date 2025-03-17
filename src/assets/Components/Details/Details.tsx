@@ -25,8 +25,8 @@ interface Actor {
 }
 
 interface MovieItem {
-  name: string;
-  title: string;
+  name: string | null;
+  title: string | null;
   tagline: string;
   release_date: string;
   runtime: number;
@@ -63,7 +63,7 @@ export default function Details({ item, actors }: DetailsProps) {
         <div className="flex flex-col md:flex-row items-center space-x-6 mb-8">
           <img
             src={`https://image.tmdb.org/t/p/original${item.poster_path}`}
-            alt={item.title}
+            alt={item.title || item.name || "No title available"}
             className="w-48 h-auto rounded-xl shadow-lg"
           />
           <div>
