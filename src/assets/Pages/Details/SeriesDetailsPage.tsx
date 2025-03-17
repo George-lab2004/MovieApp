@@ -11,13 +11,17 @@ import Details from "../../Components/Details/Details";
 // Define types for series and Actor details
 interface seriesDetails {
   id: number;
-  title: string;
+  name: string;
+  title?: string; // Optional for series
   overview: string;
   backdrop_path: string;
   poster_path: string;
   tagline: string;
-  release_date: string;
-  runtime: number;
+  first_air_date: string;
+  release_date?: string; // Optional for series
+  runtime?: number; // Optional for series
+  number_of_episodes: number;
+  number_of_seasons: number;
   genres: { id: number; name: string }[];
   production_companies: {
     id: number;
@@ -27,8 +31,8 @@ interface seriesDetails {
   production_countries: { name: string }[];
   original_language: string;
   imdb_id: string;
-  budget: number;
-  revenue: number;
+  budget?: number; // Optional for series
+  revenue?: number; // Optional for series
   vote_average: number;
 }
 

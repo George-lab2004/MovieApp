@@ -17,8 +17,6 @@ interface HeroProps {
   fetchData: () => Promise<{ data: { results: MovieItem[] } }>;
   buttonText: string;
   onButtonClick: () => void;
-  getID: () => any;
-  getMoviesDetails: () => any;
   isshowingMovies: boolean;
 }
 
@@ -26,8 +24,6 @@ const Hero: React.FC<HeroProps> = ({
   fetchData,
   buttonText,
   onButtonClick,
-  getID,
-  getMoviesDetails,
   isshowingMovies,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
