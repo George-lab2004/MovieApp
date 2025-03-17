@@ -11,7 +11,7 @@ import Details from "../../Components/Details/Details";
 // Define types for Movie and Actor details
 interface MovieDetails {
   id: number;
-  title?: string; // Optional, because TV shows use `name`
+  title: string; // Optional, because TV shows use `name`
   name: string; // Ensure name is always a string
   overview: string;
   backdrop_path: string;

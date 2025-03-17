@@ -12,7 +12,7 @@ import Details from "../../Components/Details/Details";
 interface seriesDetails {
   id: number;
   name: string;
-  title?: string; // Optional for series
+  title: string; // Optional for series
   overview: string;
   backdrop_path: string;
   poster_path: string;
