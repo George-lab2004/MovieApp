@@ -1,5 +1,6 @@
 import { memo, useEffect, useState } from "react";
 import Loader from "../Loader/Loader";
+import { Link } from "react-router-dom";
 
 // Movie Item Type
 interface MovieItem {
@@ -16,12 +17,18 @@ interface HeroProps {
   fetchData: () => Promise<{ data: { results: MovieItem[] } }>;
   buttonText: string;
   onButtonClick: () => void;
+  getID: () => any;
+  getMoviesDetails: () => any;
+  isshowingMovies: boolean;
 }
 
 const Hero: React.FC<HeroProps> = ({
   fetchData,
   buttonText,
   onButtonClick,
+  getID,
+  getMoviesDetails,
+  isshowingMovies,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [items, setItems] = useState<MovieItem[]>([]);
@@ -80,7 +87,7 @@ const Hero: React.FC<HeroProps> = ({
             }}
           >
             {/* Featured Content */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-left">
+            <div className="absolute top-72 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-left">
               <h1 className="text-4xl font-bold">
                 {featured?.title || featured?.name}
               </h1>
@@ -103,17 +110,30 @@ const Hero: React.FC<HeroProps> = ({
                     Add to Watchlist
                   </button>
                 </div>
-                <button
-                  className="px-4 py-2 mt-4 cursor-pointer rounded-lg hover:bg-gray-900 transition-colors bg-gray-600 text-yellow-400"
-                  aria-label="Read More"
-                >
-                  Read More
-                </button>
+                {isshowingMovies ? (
+                  <Link to={`MoviesDetailsPage/${featured.id}`}>
+                    <button
+                      className="px-4 py-2 mt-4 cursor-pointer rounded-lg hover:bg-gray-900 transition-colors bg-gray-600 text-yellow-400"
+                      aria-label="Read More"
+                    >
+                      Read More
+                    </button>
+                  </Link>
+                ) : (
+                  <Link to={`SeriesDetailsPage/${featured.id}`}>
+                    <button
+                      className="px-4 py-2 mt-4 cursor-pointer rounded-lg hover:bg-gray-900 transition-colors bg-gray-600 text-yellow-400"
+                      aria-label="Read More"
+                    >
+                      Read More
+                    </button>
+                  </Link>
+                )}
               </div>
             </div>
 
             {/* Small Image List */}
-            <div className="relative w-full px-4 h-fit overflow-x-auto scrollbar-custom shadow-lg rounded-lg">
+            <div className="relative w-full px-4 h-[70vh] overflow-x-auto scrollbar-custom shadow-lg rounded-lg">
               <div className="flex gap-4 p-4">
                 {items.map((item) => (
                   <div

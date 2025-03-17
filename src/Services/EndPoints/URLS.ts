@@ -21,3 +21,11 @@ export const Movies = {
 export const Series = {
   Trending: "/trending/tv/week",
 };
+export const Detail = {
+  Movie: (id: string) => `/movie/${id}`,
+  Series: (id: string) => `/tv/${id}`,
+};
+export const Actors = {
+  Movie: (id: string) => `/movie/${id}/credits`,
+  Series: (id: string) => `/tv/${id}/credits`,
+};

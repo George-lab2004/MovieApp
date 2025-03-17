@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,8 +38,9 @@ export default function Navbar() {
       {/* Desktop Navbar */}
       <div className="hidden md:block">
         <nav className="flex justify-between items-center px-12 py-5 shadow-md bg-white dark:bg-gray-900 dark:text-white transition-colors">
-          <h1 className="text-2xl font-bold">MoviePulse</h1>
-
+          <Link to="">
+            <h1 className="text-2xl cursor-pointer font-bold">MoviePulse</h1>
+          </Link>
           {/* Search Input */}
           <div className="relative flex-grow max-w-xl lg:w-96 xl:w-[50rem]">
             <input
