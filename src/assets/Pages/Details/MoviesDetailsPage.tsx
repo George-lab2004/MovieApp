@@ -34,6 +34,7 @@ interface MovieDetails {
   budget?: number;
   revenue?: number;
   vote_average: number;
+  Reviews: Reviews[];
 }
 
 interface Actor {
@@ -43,7 +44,27 @@ interface Actor {
   character: string;
   popularity: number;
 }
+interface Similar {
+  id: number;
+  name: string;
+  character: string;
+  profile_path?: string | null;
+  popularity: number;
+}
+interface AuthorDetails {
+  name?: string;
+  avatar_path?: string | null;
+  rating?: number;
+}
 
+interface Reviews {
+  author: string;
+  author_details: AuthorDetails;
+  id: number;
+  content: string;
+  created_at: string;
+  updated_at?: string;
+}
 export default function MoviesDetailsPage() {
   const { id } = useParams<{ id: string }>(); // Ensure id is a string
 
@@ -51,7 +72,8 @@ export default function MoviesDetailsPage() {
   const [actors, setActors] = useState<Actor[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null); // Handle errors
-
+  const [Similar, setSimilar] = useState<Similar[]>([]);
+  const [Reviews, setReviews] = useState<Reviews[]>([]);
   useEffect(() => {
     if (!id) {
       setError("Invalid movie ID.");
@@ -63,13 +85,17 @@ export default function MoviesDetailsPage() {
       setLoading(true);
       setError(null);
       try {
-        const [movieResponse, actorResponse] = await Promise.all([
-          axiosInstanceURL.get(Detail.Movie(id)),
-          axiosInstanceURL.get(Actors.Movie(id)),
-        ]);
+        const [movieResponse, actorResponse, similarResponse, ReviewsResponse] =
+          await Promise.all([
+            axiosInstanceURL.get(Detail.Movie(id)),
+            axiosInstanceURL.get(Actors.Movie(id)),
+            axiosInstanceURL.get(Detail.MovieSimilar(id)),
+            axiosInstanceURL.get(Detail.MoviesReviews(id)),
+          ]);
 
         const movieData = movieResponse.data;
-
+        setSimilar(similarResponse.data.results);
+        setReviews(ReviewsResponse.data.results);
         // Ensure required fields are always defined
         setMovieDetails({
           ...movieData,
@@ -95,5 +121,12 @@ export default function MoviesDetailsPage() {
   if (!movieDetails)
     return <p className="text-center text-red-500">Movie not found.</p>;
 
-  return <Details item={movieDetails} actors={actors} />;
+  return (
+    <Details
+      item={movieDetails}
+      actors={actors}
+      similar={Similar}
+      Reviews={Reviews}
+    />
+  );
 }

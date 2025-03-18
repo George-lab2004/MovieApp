@@ -24,6 +24,10 @@ export const Series = {
 export const Detail = {
   Movie: (id: string) => `/movie/${id}`,
   Series: (id: string) => `/tv/${id}`,
+  MovieSimilar: (id: string) => `/movie/${id}/similar`,
+  SeriesSimilar: (id: string) => `/tv/${id}/similar`,
+  MoviesReviews: (id: string) => `/movie/${id}/reviews`,
+  SeriesReviews: (id: string) => `/tv/${id}/reviews`,
 };
 export const Actors = {
   Movie: (id: string) => `/movie/${id}/credits`,

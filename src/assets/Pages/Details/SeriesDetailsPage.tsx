@@ -34,6 +34,7 @@ interface SeriesDetails {
   budget?: number;
   revenue?: number;
   vote_average: number;
+  Reviews: Reviews[];
 }
 
 interface Actor {
@@ -42,6 +43,27 @@ interface Actor {
   profile_path: string | null;
   character: string;
   popularity: number;
+}
+
+interface Similar {
+  id: number;
+  name: string;
+  character: string;
+  profile_path?: string | null;
+  popularity: number;
+}
+interface AuthorDetails {
+  name?: string;
+  avatar_path?: string | null;
+  rating?: number;
+}
+interface Reviews {
+  author: string;
+  author_details: AuthorDetails;
+  id: number;
+  content: string;
+  created_at: string;
+  updated_at?: string;
 }
 
 export default function SeriesDetailsPage() {
@@ -53,6 +75,8 @@ export default function SeriesDetailsPage() {
   const [actors, setActors] = useState<Actor[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null); // Handle errors
+  const [Similar, setSimilar] = useState<Similar[]>([]);
+  const [Reviews, setReviews] = useState<Reviews[]>([]);
 
   useEffect(() => {
     if (!id) {
@@ -65,12 +89,21 @@ export default function SeriesDetailsPage() {
       setLoading(true);
       setError(null);
       try {
-        const [seriesResponse, actorResponse] = await Promise.all([
+        const [
+          seriesResponse,
+          actorResponse,
+          similarResponse,
+          ReviewsResponse,
+        ] = await Promise.all([
           axiosInstanceURL.get(Detail.Series(id)),
           axiosInstanceURL.get(Actors.Series(id)),
+          axiosInstanceURL.get(Detail.MovieSimilar(id)),
+          axiosInstanceURL.get(Detail.SeriesReviews(id)),
         ]);
 
         const seriesData = seriesResponse.data;
+        setSimilar(similarResponse.data.results);
+        setReviews(ReviewsResponse.data.results);
 
         // Ensure required fields are always defined
         setSeriesDetails({
@@ -96,5 +129,12 @@ export default function SeriesDetailsPage() {
   if (!seriesDetails)
     return <p className="text-center text-red-500">Series not found.</p>;
 
-  return <Details item={seriesDetails} actors={actors} />;
+  return (
+    <Details
+      item={seriesDetails}
+      actors={actors}
+      similar={Similar}
+      Reviews={Reviews}
+    />
+  );
 }

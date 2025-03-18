@@ -34,8 +34,10 @@ export default function Home() {
   return (
     <div className="-z-50">
       <AnimatedText text="Dive into World of Movies" />
-
-      <Header title="Trending Movies" />
+      <div className="my-5">
+        {" "}
+        <Header title="Trending Movies" />
+      </div>
       <Hero
         fetchData={isShowingMovies ? getMovies : getSeries}
         buttonText={
