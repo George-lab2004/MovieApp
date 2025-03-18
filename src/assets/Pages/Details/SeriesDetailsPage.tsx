@@ -97,7 +97,7 @@ export default function SeriesDetailsPage() {
         ] = await Promise.all([
           axiosInstanceURL.get(Detail.Series(id)),
           axiosInstanceURL.get(Actors.Series(id)),
-          axiosInstanceURL.get(Detail.MovieSimilar(id)),
+          axiosInstanceURL.get(Detail.SeriesSimilar(id)),
           axiosInstanceURL.get(Detail.SeriesReviews(id)),
         ]);
 
