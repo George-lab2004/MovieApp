@@ -35,6 +35,7 @@ interface MovieDetails {
   revenue?: number;
   vote_average: number;
   Reviews: Reviews[];
+  show?: boolean;
 }
 
 interface Actor {
@@ -65,6 +66,7 @@ interface Reviews {
   created_at: string;
   updated_at?: string;
 }
+
 export default function MoviesDetailsPage() {
   const { id } = useParams<{ id: string }>(); // Ensure id is a string
 
@@ -74,6 +76,7 @@ export default function MoviesDetailsPage() {
   const [error, setError] = useState<string | null>(null); // Handle errors
   const [Similar, setSimilar] = useState<Similar[]>([]);
   const [Reviews, setReviews] = useState<Reviews[]>([]);
+  const [Show] = useState<boolean>(true);
   useEffect(() => {
     if (!id) {
       setError("Invalid movie ID.");
@@ -127,6 +130,7 @@ export default function MoviesDetailsPage() {
       actors={actors}
       similar={Similar}
       Reviews={Reviews}
+      show={Show}
     />
   );
 }

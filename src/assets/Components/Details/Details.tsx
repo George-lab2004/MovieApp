@@ -1,8 +1,17 @@
-import { useState } from "react";
+import { AiFillStar } from "react-icons/ai";
+import { AiFillCloseCircle } from "react-icons/ai";
+import { useRef, useState } from "react";
 import AnimatedText from "../Shared/AnimatedText";
 import "../../Pages/Home/Home.css";
 import { Link } from "react-router-dom";
 import Header from "../Shared/Header";
+import { motion, useInView } from "framer-motion";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
 interface Genre {
   id: number;
   name: string;
@@ -59,6 +68,7 @@ interface DetailsProps {
   actors: Actor[];
   similar: Similar[];
   Reviews: Reviews[];
+  show?: boolean;
 }
 interface AuthorDetails {
   name?: string;
@@ -79,6 +89,7 @@ export default function Details({
   actors,
   similar,
   Reviews,
+  show,
 }: DetailsProps) {
   const [showAllActors, setShowAllActors] = useState(false);
 
@@ -86,13 +97,55 @@ export default function Details({
   const visibleActors = showAllActors ? actors : actors.slice(0, 8);
   const visibleSimilar = similar.slice(0, 8);
   const visibleReviews = Reviews.slice(0, 9);
+  const containerVariants = {
+    hidden: { y: 50, opacity: 0, scale: 0.95 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 0.6, ease: "easeOut", staggerChildren: 0.15 },
+    },
+    exit: { y: 50, opacity: 0, scale: 0.95 },
+  };
+  const castVariants = {
+    hidden: { x: -50, opacity: 0 },
+    visible: { x: 0, opacity: 1, transition: { duration: 0.5 } },
+  };
+  const childVariants = {
+    hidden: { x: -50, opacity: 0 },
+    visible: { x: 0, opacity: 1, transition: { duration: 0.5 } },
+  };
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px 0px" });
+
+  const [display, setDisplay] = useState(false);
+  const [selectedReview, setSelectedReview] = useState<Reviews | null>(null); // Store the selected review
+
+  const handleShow = (review: Reviews) => {
+    setSelectedReview(review); // Set the selected review
+    setDisplay(true);
+  };
+
+  const handleClose = () => {
+    setDisplay(false);
+    setSelectedReview(null); // Clear the selected review
+  };
 
   return (
     <div className="min-h-screen p-8 transition-colors bg-gradient-to-b from-gray-100 to-gray-300 text-gray-800 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 dark:text-gray-200">
       {/* Movie Container */}
-      <div className="max-w-5xl mx-auto p-6 rounded-xl shadow-xl bg-gray-100 bg-opacity-90 border border-gray-200 dark:bg-gray-800 dark:bg-opacity-80 dark:border-gray-700">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        className="max-w-5xl mx-auto p-6 rounded-xl shadow-xl bg-gray-100 bg-opacity-90 border border-gray-200 dark:bg-gray-800 dark:bg-opacity-80 dark:border-gray-700"
+      >
         {/* Header */}
-        <div className="flex flex-col md:flex-row items-center space-x-6 mb-8">
+        <motion.div
+          variants={childVariants}
+          className="flex flex-col md:flex-row items-center space-x-6 mb-8"
+        >
           {item.poster_path && (
             <img
               src={`https://image.tmdb.org/t/p/original${item.poster_path}`}
@@ -119,22 +172,28 @@ export default function Details({
                 : ""}
             </p>
           </div>
-        </div>
+        </motion.div>
 
         {/* Overview Section */}
         {item.overview && (
-          <div className="my-6">
+          <motion.div variants={childVariants} className="my-6">
             <h2 className="text-2xl font-semibold text-[#4a90e2] dark:text-yellow-400">
               Overview
             </h2>
-            <p className="mt-2 leading-relaxed text-gray-700 dark:text-gray-300">
+            <motion.p
+              variants={childVariants}
+              className="mt-2 leading-relaxed text-gray-700 dark:text-gray-300"
+            >
               {item.overview}
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
         )}
 
         {/* Info Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+        <motion.div
+          variants={childVariants}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8"
+        >
           <div>
             <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
               Genres
@@ -152,7 +211,10 @@ export default function Details({
             <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
               Production
             </h3>
-            <ul className="mt-2 text-gray-600 dark:text-gray-400">
+            <motion.ul
+              variants={childVariants}
+              className="mt-2 text-gray-600 dark:text-gray-400"
+            >
               {item.production_companies.map((company) => (
                 <li key={company.id} className="flex items-center space-x-2">
                   {company.logo_path ? (
@@ -166,14 +228,17 @@ export default function Details({
                   )}
                 </li>
               ))}
-            </ul>
+            </motion.ul>
           </div>
 
           <div>
             <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
               Details
             </h3>
-            <ul className="mt-2 text-gray-600 dark:text-gray-400">
+            <motion.ul
+              variants={childVariants}
+              className="mt-2 text-gray-600 dark:text-gray-400"
+            >
               {item.original_language && (
                 <li>
                   <strong>Language:</strong> {item.original_language}
@@ -206,13 +271,13 @@ export default function Details({
                   ? `${Math.floor(item.revenue / 1_000_000)}M`
                   : "0M"}
               </li>
-            </ul>
+            </motion.ul>
           </div>
-        </div>
+        </motion.div>
 
         {/* Ratings */}
         {item.vote_average !== undefined && (
-          <div className="mt-8">
+          <motion.div variants={childVariants} className="mt-8">
             <h2 className="text-2xl font-semibold text-gray-700 dark:text-gray-300">
               Ratings
             </h2>
@@ -221,16 +286,22 @@ export default function Details({
                 {item.vote_average.toFixed(1)}
               </span>
             </div>
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
+
       {/* Cast Section */}
       <div className="my-8">
         <Header title="Cast " />
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
           {visibleActors.map((actor) => (
-            <div
+            <motion.div
+              ref={ref}
+              variants={castVariants}
+              initial="hidden"
+              animate={isInView ? "visible" : "hidden"}
+              whileHover={{ scale: 1.05 }}
               key={actor.id}
               className="flex flex-col items-center bg-white dark:bg-gray-800 dark:bg-opacity-80 p-4 rounded-xl shadow-lg"
             >
@@ -247,7 +318,7 @@ export default function Details({
               <p className="text-gray-600 dark:text-gray-300 text-sm italic text-center">
                 {actor.character}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
 
@@ -263,8 +334,9 @@ export default function Details({
         )}
       </div>
       <Header title="Similar Shows" />
+      {/* Similar Shows Sectiom */}
       <section className="mt-8">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {visibleSimilar.map((movie) => (
             <div
               key={movie.id}
@@ -286,29 +358,55 @@ export default function Details({
                   {movie.original_title}
                 </h5>
                 <div className="flex flex-col">
-                  <Link to={`/MoviesDetailsPage/${movie.id}`}>
-                    <button
-                      className="inline-flex w-full px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 dark:bg-blue-700 rounded-xl hover:bg-blue-800 dark:hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 justify-center cursor-pointer dark:hover:text-yellow-300 dark:font-semibold items-center mb-5"
-                      onClick={() => console.log(`Movie ID: ${movie.id}`)}
-                    >
-                      Read more
-                      <svg
-                        className="w-3.5 h-3.5 ms-2"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 14 10"
+                  {show ? (
+                    <Link to={`/MoviesDetailsPage/${movie.id}`}>
+                      <button
+                        className="inline-flex w-full px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 dark:bg-blue-700 rounded-xl hover:bg-blue-800 dark:hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 justify-center cursor-pointer dark:hover:text-yellow-300 dark:font-semibold items-center mb-5"
+                        onClick={() => console.log(`Movie ID: ${movie.id}`)}
                       >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M1 5h12m0 0L9 1m4 4L9 9"
-                        />
-                      </svg>
-                    </button>
-                  </Link>
+                        Read more
+                        <svg
+                          className="w-3.5 h-3.5 ms-2"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 10"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M1 5h12m0 0L9 1m4 4L9 9"
+                          />
+                        </svg>
+                      </button>
+                    </Link>
+                  ) : (
+                    <Link to={`/SeriesDetailsPage/${movie.id}`}>
+                      <button
+                        className="inline-flex w-full px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 dark:bg-blue-700 rounded-xl hover:bg-blue-800 dark:hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 justify-center cursor-pointer dark:hover:text-yellow-300 dark:font-semibold items-center mb-5"
+                        onClick={() => console.log(`Movie ID: ${movie.id}`)}
+                      >
+                        Read more
+                        <svg
+                          className="w-3.5 h-3.5 ms-2"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 10"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M1 5h12m0 0L9 1m4 4L9 9"
+                          />
+                        </svg>
+                      </button>
+                    </Link>
+                  )}
 
                   <button className="inline-flex w-full px-3 py-2 text-sm text-blue-600 dark:text-blue-400 font-medium text-center bg-gray-200 dark:bg-gray-800 rounded-xl focus:ring-4 hover:text-yellow-500 dark:hover:text-yellow-300 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 justify-center items-center cursor-pointer dark:font-semibold ">
                     Add to Watchlist
@@ -361,13 +459,77 @@ export default function Details({
                   {review.content.length > 150
                     ? `${review.content.slice(0, 150)}...`
                     : review.content}
+                  {review.content.length > 150 && ( // Conditionally render the "Read More" button
+                    <button
+                      onClick={() => handleShow(review)} // Pass the review to handleShow
+                      className="text-blue-500 font-semibold ml-1 transition cursor-pointer hover:text-blue-700"
+                    >
+                      Read More
+                    </button>
+                  )}
                 </p>
               </div>
             ))}
           </div>
         </div>
       )}
-      {/* Reviews Section */}
+
+      {/* Dialog for Full Review */}
+      <Dialog open={display} onClose={handleClose} className="relative z-50">
+        <DialogBackdrop className="fixed inset-0 bg-black/60" />
+
+        {selectedReview && (
+          <div className="fixed inset-0 flex items-center justify-center p-4">
+            <DialogPanel className="bg-white dark:bg-gray-900 rounded-lg shadow-xl max-w-3xl w-full p-6 sm:p-8 flex flex-col md:flex-row gap-6 max-h-[90vh] overflow-y-auto">
+              {/* Avatar */}
+              <div className="w-full md:w-1/3 flex flex-col items-center gap-4">
+                {selectedReview?.author_details?.avatar_path ? (
+                  <img
+                    src={`https://image.tmdb.org/t/p/w200${selectedReview.author_details.avatar_path}`}
+                    alt={
+                      selectedReview.author_details.name ||
+                      selectedReview.author
+                    }
+                    className="w-24 h-24 object-cover rounded-full shadow-lg"
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center">
+                    <span className="text-gray-600 dark:text-gray-400 text-sm">
+                      No Image
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Details */}
+              <div className="w-full md:w-2/3 relative">
+                <button
+                  onClick={handleClose}
+                  className="absolute cursor-pointer top-2 right-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition text-2xl"
+                >
+                  <AiFillCloseCircle />
+                </button>
+
+                <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  {selectedReview.author_details.name || selectedReview.author}
+                </DialogTitle>
+
+                {/* Rating */}
+                {selectedReview.author_details.rating && (
+                  <p className="text-gray-700 dark:text-gray-300 font-medium mt-1">
+                    <AiFillStar /> {selectedReview.author_details.rating}/10
+                  </p>
+                )}
+
+                {/* Review Content */}
+                <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">
+                  {selectedReview.content}
+                </p>
+              </div>
+            </DialogPanel>
+          </div>
+        )}
+      </Dialog>
     </div>
   );
 }
