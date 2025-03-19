@@ -8,6 +8,9 @@ import {
 import AnimatedText from "../../Components/Shared/AnimatedText";
 import Header from "../../Components/Shared/Header";
 import "./Home.css";
+import TopRated from "../../Components/TopRated/TopRatedMovies";
+import UpcomingMovies from "../../Components/Upcoming/UpcomingMovies";
+import TopRatedSeries from "../../Components/TopRated/TopRatedSeries";
 
 export default function Home() {
   const [isShowingMovies, setIsShowingMovies] = useState(true);
@@ -22,11 +25,6 @@ export default function Home() {
     []
   );
 
-  // Automatically fetch movie details when MovieId updates
-
-  // Handle movie selection
-
-  // Toggle between movies and series
   const toggleContent = useCallback(() => {
     setIsShowingMovies((prev) => !prev);
   }, []);
@@ -46,6 +44,9 @@ export default function Home() {
         isshowingMovies={isShowingMovies}
         onButtonClick={toggleContent}
       />
+      <TopRated />
+      <UpcomingMovies />
+      <TopRatedSeries />
     </div>
   );
 }

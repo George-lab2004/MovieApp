@@ -17,9 +17,13 @@ export const axiosInstanceURL = axios.create({
 export const Movies = {
   Popular: "/movie/popular",
   Trending: "/trending/movie/week",
+  TopRated: "/movie/top_rated",
+  Upcoming: "/movie/upcoming",
 };
 export const Series = {
   Trending: "/trending/tv/week",
+  TopRated: "/tv/top_rated",
+  Upcoming: "/tv/upcoming",
 };
 export const Detail = {
   Movie: (id: string) => `/movie/${id}`,

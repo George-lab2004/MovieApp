@@ -355,7 +355,9 @@ export default function Details({
               </span>
               <div className="p-5 pt-16 text-gray-900 dark:text-white text-center">
                 <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-800 dark:text-white">
-                  {movie.original_title}
+                  {(movie.original_title ?? "").length > 20
+                    ? `${movie.original_title?.slice(0, 20)}...`
+                    : movie.original_title}
                 </h5>
                 <div className="flex flex-col">
                   {show ? (
@@ -417,6 +419,7 @@ export default function Details({
           ))}
         </div>
       </section>
+      {/* Reviews Section */}
       {visibleReviews.length > 0 && (
         <div className="mt-8">
           <Header title="User Reviews" />
