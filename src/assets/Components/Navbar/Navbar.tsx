@@ -57,23 +57,25 @@ export default function Navbar() {
           {/* Navigation Links & Theme Toggle */}
           <div className="flex items-center gap-6">
             <ul className="hidden md:flex gap-8 text-lg font-medium">
-              <li
+              <Link
+                to="/Movies"
                 className="relative cursor-pointer text-gray-700 dark:text-white hover:text-blue-500 
               before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px] 
               before:bg-blue-600 before:transition-all before:duration-300 
               hover:before:w-full hover:before:left-0"
               >
                 Movies
-              </li>
+              </Link>
 
-              <li
+              <Link
+                to={"/Series"}
                 className="relative cursor-pointer text-gray-700 dark:text-white hover:text-blue-500 
               before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px] 
               before:bg-blue-600 before:transition-all before:duration-300 
               hover:before:w-full hover:before:left-0"
               >
                 TV Series
-              </li>
+              </Link>
               <li
                 className="relative cursor-pointer text-gray-700 dark:text-white hover:text-blue-500 
               before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px] 

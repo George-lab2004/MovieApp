@@ -5,6 +5,8 @@ import Layout from "./assets/Components/Layout/Layout";
 import Loader from "./assets/Components/Loader/Loader";
 import MoviesDetailsPage from "./assets/Pages/Details/MoviesDetailsPage";
 import SeriesDetailsPage from "./assets/Pages/Details/SeriesDetailsPage";
+import Movies from "./assets/Pages/Movies/MoviesPage";
+import SeriessPage from "./assets/Pages/Series/SeriesPage";
 
 // Lazy-load the Home component using dynamic import()
 const Home = lazy(() => import("./assets/Pages/Home/Home"));
@@ -30,6 +32,14 @@ function App() {
         {
           path: "SeriesDetailsPage/:id", // Update here
           element: <SeriesDetailsPage />,
+        },
+        {
+          path: "Movies",
+          element: <Movies />,
+        },
+        {
+          path: "Series",
+          element: <SeriessPage />,
         },
       ],
     },

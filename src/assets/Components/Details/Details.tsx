@@ -40,6 +40,7 @@ interface Similar {
   poster_path?: string;
   vote_average?: number;
   id: number;
+  name?: string;
 }
 interface MovieItem {
   name?: string | null;
@@ -82,7 +83,7 @@ interface Reviews {
   id: number;
   content: string;
   created_at: string;
-  updated_at?: string;
+  updated_at?: string | null;
 }
 export default function Details({
   item,
@@ -358,6 +359,12 @@ export default function Details({
                   {(movie.original_title ?? "").length > 20
                     ? `${movie.original_title?.slice(0, 20)}...`
                     : movie.original_title}
+                  {(movie.original_title ?? "").length > 20
+                    ? `${movie.original_title?.slice(0, 20)}...`
+                    : movie.original_title}
+                  {(movie.name ?? "").length > 20
+                    ? `${movie.name?.slice(0, 20)}...`
+                    : movie.name}
                 </h5>
                 <div className="flex flex-col">
                   {show ? (
@@ -502,6 +509,16 @@ export default function Details({
                     </span>
                   </div>
                 )}
+                <div className="dark:text-white flex flex-col gap-2 text-sm">
+                  <span className="font-semibold opacity-80">
+                    📅 Created: {selectedReview.created_at.slice(0, 10)}
+                  </span>
+                  {selectedReview?.updated_at && (
+                    <span className="font-semibold italic dark:text-gray-300">
+                      🔄 Updated: {selectedReview.updated_at.slice(0, 10)}
+                    </span>
+                  )}
+                </div>
               </div>
 
               {/* Details */}

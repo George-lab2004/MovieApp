@@ -18,7 +18,12 @@ export const Movies = {
   Popular: "/movie/popular",
   Trending: "/trending/movie/week",
   TopRated: "/movie/top_rated",
+  discover: "discover/movie",
   Upcoming: "/movie/upcoming",
+};
+export const filter = {
+  Movies: (id: string) => `/discover/movie?with_genres=${id}`,
+  Series: (id: string) => `/discover/tv?with_genres=${id}`,
 };
 export const Series = {
   Trending: "/trending/tv/week",
