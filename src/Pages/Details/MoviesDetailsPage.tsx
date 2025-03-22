@@ -1,12 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Loader from "../../Components/Loader/Loader";
+import Details from "../../Components/Details/Details";
 import {
   Actors,
   axiosInstanceURL,
   Detail,
-} from "../../../Services/EndPoints/URLS";
-import Details from "../../Components/Details/Details";
+} from "../../Services/EndPoints/URLS";
 
 // Define types for Movie and Actor details
 interface MovieDetails {

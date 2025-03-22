@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
-import { axiosInstanceURL, filter } from "../../../Services/EndPoints/URLS";
+import {
+  axiosInstanceURL,
+  filter,
+  Movies,
+} from "../../Services/EndPoints/URLS";
 import Header from "../../Components/Shared/Header";
 import MediaCard from "../../Components/Media/MediaCard/MediaCard";
 import Loader from "../../Components/Loader/Loader";
 import { FaArrowLeft, FaArrowRight, FaFilm } from "react-icons/fa";
 
-interface SeriessList {
+interface MoviesList {
   original_title?: string;
   poster_path?: string;
   vote_average?: number;
@@ -13,8 +17,8 @@ interface SeriessList {
   name?: string;
 }
 
-export default function SeriessPage() {
-  const [Series, setSeriess] = useState<SeriessList[]>([]);
+export default function MoviesPage() {
+  const [movies, setMovies] = useState<MoviesList[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState<number | null>(null);
@@ -22,32 +26,32 @@ export default function SeriessPage() {
   const [activeGenre, setActiveGenre] = useState<string | null>(null);
 
   /**
-   * Fetch Series from API based on the given page number.
+   * Fetch movies from API based on the given page number.
    * @param page - The page number to fetch.
    * @param genreId - The genre ID for filtering.
    */
-  async function fetchSeriess(page: number, genreId: string | null = null) {
+  async function fetchMovies(page: number, genreId: string | null = null) {
     setLoading(true);
     try {
       const params: { page: number; with_genres?: string } = { page };
       if (genreId) params.with_genres = genreId;
 
       const response = await axiosInstanceURL.get(
-        filter.Series(genreId ?? ""),
+        genreId ? filter.Movies(genreId) : Movies.discover,
         { params }
       );
 
-      setSeriess(response.data.results);
+      setMovies(response.data.results);
       setTotalPages(response.data.total_pages); // ✅ Always update total pages
     } catch (error) {
-      console.error("Error fetching Series:", error);
+      console.error("Error fetching movies:", error);
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    fetchSeriess(currentPage, genre);
+    fetchMovies(currentPage, genre);
   }, [currentPage, genre]);
 
   function handleGenreClick(id: string | null) {
@@ -57,17 +61,17 @@ export default function SeriessPage() {
   }
 
   const genres = [
-    { id: "10759", name: "Action" },
+    { id: "28", name: "Action" },
     { id: "35", name: "Comedy" },
     { id: "18", name: "Drama" },
     { id: "10751", name: "Family" },
-    { id: "10762", name: "Kids" },
+    { id: "27", name: "Horror" },
   ];
 
   return (
-    <div className="Series">
+    <div className="Movies">
       <div className="mt-5">
-        <Header title="Series" />
+        <Header title="Movies" />
       </div>
 
       {/* Genre Selection */}
@@ -111,13 +115,13 @@ export default function SeriessPage() {
         </span>
       </div>
 
-      {/* Series Cards Section */}
+      {/* Movie Cards Section */}
       <div className="relative flex flex-wrap justify-center space-x-4 p-5">
         {loading ? (
           <Loader />
         ) : (
-          Series.map((Series) => (
-            <MediaCard key={Series.id} media={Series} show={true} />
+          movies.map((movie) => (
+            <MediaCard key={movie.id} media={movie} show={true} />
           ))
         )}
       </div>
@@ -133,6 +137,7 @@ export default function SeriessPage() {
       }`}
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
+          aria-label="Previous Page"
         >
           <FaArrowLeft className="mr-1 sm:mr-2" /> Previous
         </button>
@@ -154,6 +159,7 @@ export default function SeriessPage() {
             )
           }
           disabled={currentPage >= (totalPages ?? 1)}
+          aria-label="Next Page"
         >
           Next <FaArrowRight className="ml-1 sm:ml-2" />
         </button>

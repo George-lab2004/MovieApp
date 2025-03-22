@@ -4,10 +4,10 @@ import { CgArrowLongLeft, CgArrowLongRight } from "react-icons/cg";
 import Loader from "../../Components/Loader/Loader";
 import MediaCard from "../../Components/Media/MediaCard/MediaCard";
 import { useQuery } from "@tanstack/react-query";
-import { axiosInstanceURL, Search } from "../../../Services/EndPoints/URLS";
+import { axiosInstanceURL, Search } from "../../Services/EndPoints/URLS";
 import Header from "../../Components/Shared/Header";
 
-export default function Searches() {
+export default function SearcheResultsS() {
   const { inputValue } = useParams<{ inputValue: string }>(); // Get the inputValue from URL
   const [page, setPage] = useState(1); // State for current page
   const [totalPages, setTotalPages] = useState<number | null>(null); // State for total pages
@@ -19,7 +19,7 @@ export default function Searches() {
       if (!inputValue) {
         throw new Error("Input value is undefined");
       }
-      const response = await axiosInstanceURL.get(Search.Movie(inputValue), {
+      const response = await axiosInstanceURL.get(Search.Series(inputValue), {
         params: { page },
       });
       setTotalPages(response.data.total_pages); // Update total pages
@@ -47,7 +47,7 @@ export default function Searches() {
   if (isError) return <p>Error fetching movies. Try again later.</p>;
 
   return (
-    <div className="Movies">
+    <div className="Series">
       <Header title={`Search Results for ${inputValue}`} />
 
       {/* Page Count Display */}
@@ -66,7 +66,7 @@ export default function Searches() {
               title: string;
               overview: string;
               poster_path: string;
-            }) => <MediaCard key={movie.id} media={movie} show={true} />
+            }) => <MediaCard key={movie.id} media={movie} show={false} />
           )
         ) : (
           <p className="text-center text-gray-400">No results found.</p>
@@ -101,8 +101,8 @@ export default function Searches() {
           : "bg-blue-500 text-white hover:bg-blue-600 active:scale-95 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-600"
       }`}
           onClick={handleNextPage}
-          disabled={page >= (totalPages ?? 1)}
           aria-label="Next"
+          disabled={page >= (totalPages ?? 1)}
         >
           Next <CgArrowLongRight className="ml-1 sm:ml-2" />
         </button>

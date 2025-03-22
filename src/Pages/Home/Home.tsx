@@ -4,7 +4,7 @@ import {
   axiosInstanceURL,
   Movies,
   Series,
-} from "../../../Services/EndPoints/URLS";
+} from "../../Services/EndPoints/URLS";
 import AnimatedText from "../../Components/Shared/AnimatedText";
 import Header from "../../Components/Shared/Header";
 import "./Home.css";

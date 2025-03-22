@@ -347,7 +347,7 @@ export default function Details({
               <img
                 className="rounded-t-lg h-64 w-full object-cover"
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                alt={movie.original_title}
+                alt={movie.original_title || movie.name || ""}
               />
               <span className="absolute ps-14 pt-5 flex w-72">
                 <span className="text-blue-700 dark:text-blue-300">

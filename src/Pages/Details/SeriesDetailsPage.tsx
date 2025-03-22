@@ -5,7 +5,7 @@ import {
   Actors,
   axiosInstanceURL,
   Detail,
-} from "../../../Services/EndPoints/URLS";
+} from "../../Services/EndPoints/URLS";
 import Details from "../../Components/Details/Details";
 
 // Define types for Series and Actor details

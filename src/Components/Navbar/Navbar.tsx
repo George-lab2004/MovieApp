@@ -94,7 +94,7 @@ export default function Navbar() {
                 className={`absolute right-4 top-1/2 -translate-y-1/2 p-2 ${
                   inputValue
                     ? "text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    : "text-gray-400  cursor-not-allowed"
+                    : "text-gray-600  cursor-not-allowed"
                 } rounded-lg`}
               >
                 <FaSearch size={20} />
@@ -160,7 +160,7 @@ relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px
             {/* Dark Mode Toggle Button */}
             <button
               onClick={handleToggleTheme}
-              className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+              className="px-4 py-2 rounded-md border cursor-pointer border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
               aria-label="Toggle dark mode"
             >
               {isDarkMode ? "🌙 Dark" : "☀️ Light"}
@@ -224,7 +224,7 @@ relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px
                 className={`absolute right-4 top-1/2 -translate-y-1/2 p-2 ${
                   inputValue
                     ? "text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    : "text-gray-400  cursor-not-allowed"
+                    : "text-gray-600  cursor-not-allowed"
                 } rounded-lg`}
               >
                 <FaSearch size={20} />
@@ -266,7 +266,7 @@ relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px
           <div className="flex justify-center mt-4">
             <button
               onClick={handleToggleTheme}
-              className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+              className="px-4 py-2 rounded-md border cursor-pointer border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
               aria-label=" Toggle dark mode"
             >
               {isDarkMode ? "🌙 Dark" : "☀️ Light"}

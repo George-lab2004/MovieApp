@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { axiosInstanceURL, Series } from "../../../Services/EndPoints/URLS";
+import { axiosInstanceURL, Series } from "../../Services/EndPoints/URLS";
 import Header from "../Shared/Header";
 import MediaCard from "../Media/MediaCard/MediaCard";
 interface Similar {

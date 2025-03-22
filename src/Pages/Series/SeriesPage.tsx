@@ -1,15 +1,11 @@
 import { useEffect, useState } from "react";
-import {
-  axiosInstanceURL,
-  filter,
-  Movies,
-} from "../../../Services/EndPoints/URLS";
+import { axiosInstanceURL, filter } from "../../Services/EndPoints/URLS";
 import Header from "../../Components/Shared/Header";
 import MediaCard from "../../Components/Media/MediaCard/MediaCard";
 import Loader from "../../Components/Loader/Loader";
 import { FaArrowLeft, FaArrowRight, FaFilm } from "react-icons/fa";
 
-interface MoviesList {
+interface SeriessList {
   original_title?: string;
   poster_path?: string;
   vote_average?: number;
@@ -17,8 +13,8 @@ interface MoviesList {
   name?: string;
 }
 
-export default function MoviesPage() {
-  const [movies, setMovies] = useState<MoviesList[]>([]);
+export default function SeriessPage() {
+  const [Series, setSeriess] = useState<SeriessList[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState<number | null>(null);
@@ -26,32 +22,32 @@ export default function MoviesPage() {
   const [activeGenre, setActiveGenre] = useState<string | null>(null);
 
   /**
-   * Fetch movies from API based on the given page number.
+   * Fetch Series from API based on the given page number.
    * @param page - The page number to fetch.
    * @param genreId - The genre ID for filtering.
    */
-  async function fetchMovies(page: number, genreId: string | null = null) {
+  async function fetchSeriess(page: number, genreId: string | null = null) {
     setLoading(true);
     try {
       const params: { page: number; with_genres?: string } = { page };
       if (genreId) params.with_genres = genreId;
 
       const response = await axiosInstanceURL.get(
-        genreId ? filter.Movies(genreId) : Movies.discover,
+        filter.Series(genreId ?? ""),
         { params }
       );
 
-      setMovies(response.data.results);
+      setSeriess(response.data.results);
       setTotalPages(response.data.total_pages); // ✅ Always update total pages
     } catch (error) {
-      console.error("Error fetching movies:", error);
+      console.error("Error fetching Series:", error);
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    fetchMovies(currentPage, genre);
+    fetchSeriess(currentPage, genre);
   }, [currentPage, genre]);
 
   function handleGenreClick(id: string | null) {
@@ -61,17 +57,17 @@ export default function MoviesPage() {
   }
 
   const genres = [
-    { id: "28", name: "Action" },
+    { id: "10759", name: "Action" },
     { id: "35", name: "Comedy" },
     { id: "18", name: "Drama" },
     { id: "10751", name: "Family" },
-    { id: "27", name: "Horror" },
+    { id: "10762", name: "Kids" },
   ];
 
   return (
-    <div className="Movies">
+    <div className="Series">
       <div className="mt-5">
-        <Header title="Movies" />
+        <Header title="Series" />
       </div>
 
       {/* Genre Selection */}
@@ -115,13 +111,13 @@ export default function MoviesPage() {
         </span>
       </div>
 
-      {/* Movie Cards Section */}
+      {/* Series Cards Section */}
       <div className="relative flex flex-wrap justify-center space-x-4 p-5">
         {loading ? (
           <Loader />
         ) : (
-          movies.map((movie) => (
-            <MediaCard key={movie.id} media={movie} show={true} />
+          Series.map((Series) => (
+            <MediaCard key={Series.id} media={Series} show={true} />
           ))
         )}
       </div>
@@ -137,7 +133,6 @@ export default function MoviesPage() {
       }`}
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          aria-label="Previous Page"
         >
           <FaArrowLeft className="mr-1 sm:mr-2" /> Previous
         </button>
@@ -159,7 +154,6 @@ export default function MoviesPage() {
             )
           }
           disabled={currentPage >= (totalPages ?? 1)}
-          aria-label="Next Page"
         >
           Next <FaArrowRight className="ml-1 sm:ml-2" />
         </button>

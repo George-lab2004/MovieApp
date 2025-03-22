@@ -1,18 +1,18 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { lazy, Suspense } from "react"; // Import lazy & Suspense for code-splitting
 import "./App.css";
-import Layout from "./assets/Components/Layout/Layout";
-import Loader from "./assets/Components/Loader/Loader";
-import MoviesDetailsPage from "./assets/Pages/Details/MoviesDetailsPage";
-import SeriesDetailsPage from "./assets/Pages/Details/SeriesDetailsPage";
-import Movies from "./assets/Pages/Movies/MoviesPage";
-import SeriessPage from "./assets/Pages/Series/SeriesPage";
-import SearchResults from "./assets/Pages/SearchResults/SearchResultsM";
+import Layout from "./Components/Layout/Layout";
+import Loader from "./Components/Loader/Loader";
+import MoviesDetailsPage from "./Pages/Details/MoviesDetailsPage";
+import SeriesDetailsPage from "./Pages/Details/SeriesDetailsPage";
+import Movies from "./Pages/Movies/MoviesPage";
+import SeriessPage from "./Pages/Series/SeriesPage";
+import SearchResults from "./Pages/SearchResults/SearchResultsM";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import SearchResultsS from "./assets/Pages/SearchResults/SearchResultsS";
+import SearchResultsS from "./Pages/SearchResults/SearchResultsS";
 
 // Lazy-load the Home component using dynamic import()
-const Home = lazy(() => import("./assets/Pages/Home/Home"));
+const Home = lazy(() => import("./Pages/Home/Home"));
 const queryClient = new QueryClient();
 
 function App() {
