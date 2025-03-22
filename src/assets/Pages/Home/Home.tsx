@@ -31,7 +31,9 @@ export default function Home() {
 
   return (
     <div className="-z-50">
-      <AnimatedText text="Dive into World of Movies" />
+      <div className="mx-2">
+        <AnimatedText text="Dive into World of Movies" />
+      </div>
       <div className="my-5">
         {" "}
         <Header title="Trending Movies" />

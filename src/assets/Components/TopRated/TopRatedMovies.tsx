@@ -25,7 +25,7 @@ export default function TopRated() {
       <div className="my-5 mt-8">
         <Header title="Top Rated Movies" />
       </div>
-      <div className="relative flex overflow-x-auto space-x-4 p-5">
+      <div className="relative flex fixScrollbar  overflow-x-auto space-x-4 p-5">
         {Movie.map((movie) => (
           <MediaCard key={movie.id} media={movie} show={show} />
         ))}

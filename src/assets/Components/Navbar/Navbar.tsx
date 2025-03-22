@@ -90,8 +90,12 @@ export default function Navbar() {
               </div>
               {/* Search Icon */}
               <Link
-                to={`${selectedCategory.link}/${inputValue}`}
-                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-gray-500 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                to={inputValue ? `${selectedCategory.link}/${inputValue}` : "#"}
+                className={`absolute right-4 top-1/2 -translate-y-1/2 p-2 ${
+                  inputValue
+                    ? "text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    : "text-gray-400  cursor-not-allowed"
+                } rounded-lg`}
               >
                 <FaSearch size={20} />
               </Link>
@@ -216,8 +220,12 @@ relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px
               </div>
               {/* Search Icon */}
               <Link
-                to={`${selectedCategory.link}/${inputValue}`}
-                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-gray-500 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                to={inputValue ? `${selectedCategory.link}/${inputValue}` : "#"}
+                className={`absolute right-4 top-1/2 -translate-y-1/2 p-2 ${
+                  inputValue
+                    ? "text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    : "text-gray-400  cursor-not-allowed"
+                } rounded-lg`}
               >
                 <FaSearch size={20} />
               </Link>

@@ -25,7 +25,7 @@ export default function TopRatedSeries() {
       <div className="my-5 mt-8">
         <Header title="Top Rated Series" />
       </div>
-      <div className="relative flex overflow-x-auto space-x-4 p-5">
+      <div className="relative fixScrollbar flex overflow-x-auto space-x-4 p-5">
         {series.map((Series) => (
           <MediaCard key={Series.id} media={Series} show={show} />
         ))}
