@@ -84,6 +84,7 @@ export default function SearcheResultsS() {
       }`}
           onClick={handlePrevPage}
           disabled={page === 1}
+          aria-label="Previous"
         >
           <CgArrowLongLeft className="mr-1 sm:mr-2" /> Previous
         </button>
@@ -100,6 +101,7 @@ export default function SearcheResultsS() {
           : "bg-blue-500 text-white hover:bg-blue-600 active:scale-95 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-600"
       }`}
           onClick={handleNextPage}
+          aria-label="Next"
           disabled={page >= (totalPages ?? 1)}
         >
           Next <CgArrowLongRight className="ml-1 sm:ml-2" />

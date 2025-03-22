@@ -328,6 +328,7 @@ export default function Details({
             <button
               onClick={() => setShowAllActors(!showAllActors)}
               className="px-4 py-2 bg-[#4a90e2] dark:bg-yellow-400 text-white dark:text-gray-900 rounded-lg shadow-md hover:bg-[#357abd] dark:hover:bg-yellow-300 transition cursor-pointer"
+              aria-label=" Show More Actors"
             >
               {showAllActors ? "Show Less" : "Show More"}
             </button>
@@ -356,15 +357,15 @@ export default function Details({
               </span>
               <div className="p-5 pt-16 text-gray-900 dark:text-white text-center">
                 <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-800 dark:text-white">
-                  {(movie.original_title ?? "").length > 20
-                    ? `${movie.original_title?.slice(0, 20)}...`
-                    : movie.original_title}
-                  {(movie.original_title ?? "").length > 20
-                    ? `${movie.original_title?.slice(0, 20)}...`
-                    : movie.original_title}
-                  {(movie.name ?? "").length > 20
-                    ? `${movie.name?.slice(0, 20)}...`
-                    : movie.name}
+                  {(movie.original_title && movie.name
+                    ? movie.original_title.length > 20
+                      ? movie.original_title.slice(0, 20) + "..."
+                      : movie.original_title
+                    : movie.original_title || movie.name || ""
+                  ).length > 20
+                    ? (movie.original_title || movie.name || "").slice(0, 20) +
+                      "..."
+                    : movie.original_title || movie.name || ""}
                 </h5>
                 <div className="flex flex-col">
                   {show ? (
@@ -372,6 +373,7 @@ export default function Details({
                       <button
                         className="inline-flex w-full px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 dark:bg-blue-700 rounded-xl hover:bg-blue-800 dark:hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 justify-center cursor-pointer dark:hover:text-yellow-300 dark:font-semibold items-center mb-5"
                         onClick={() => console.log(`Movie ID: ${movie.id}`)}
+                        aria-label=" Read More"
                       >
                         Read more
                         <svg
@@ -396,6 +398,7 @@ export default function Details({
                       <button
                         className="inline-flex w-full px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 dark:bg-blue-700 rounded-xl hover:bg-blue-800 dark:hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 justify-center cursor-pointer dark:hover:text-yellow-300 dark:font-semibold items-center mb-5"
                         onClick={() => console.log(`Movie ID: ${movie.id}`)}
+                        aria-label=" Read More"
                       >
                         Read more
                         <svg
@@ -417,7 +420,10 @@ export default function Details({
                     </Link>
                   )}
 
-                  <button className="inline-flex w-full px-3 py-2 text-sm text-blue-600 dark:text-blue-400 font-medium text-center bg-gray-200 dark:bg-gray-800 rounded-xl focus:ring-4 hover:text-yellow-500 dark:hover:text-yellow-300 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 justify-center items-center cursor-pointer dark:font-semibold ">
+                  <button
+                    className="inline-flex w-full px-3 py-2 text-sm text-blue-600 dark:text-blue-400 font-medium text-center bg-gray-200 dark:bg-gray-800 rounded-xl focus:ring-4 hover:text-yellow-500 dark:hover:text-yellow-300 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 justify-center items-center cursor-pointer dark:font-semibold "
+                    aria-label=" Add to Watchlist"
+                  >
                     Add to Watchlist
                   </button>
                 </div>
@@ -473,6 +479,7 @@ export default function Details({
                     <button
                       onClick={() => handleShow(review)} // Pass the review to handleShow
                       className="text-blue-500 font-semibold ml-1 transition cursor-pointer hover:text-blue-700"
+                      aria-label="Read More"
                     >
                       Read More
                     </button>
@@ -526,6 +533,7 @@ export default function Details({
                 <button
                   onClick={handleClose}
                   className="absolute cursor-pointer top-2 right-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition text-2xl"
+                  aria-label="Close Dialog"
                 >
                   <AiFillCloseCircle />
                 </button>

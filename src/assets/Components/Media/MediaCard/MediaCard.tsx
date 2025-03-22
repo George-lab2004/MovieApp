@@ -21,7 +21,7 @@ export default function MediaCard({
       <img
         className="rounded-t-lg h-64 w-full object-cover"
         src={`https://image.tmdb.org/t/p/w500${media.poster_path}`}
-        alt={media.original_title}
+        alt={media.original_title || media.name}
       />
       <span className="absolute ps-14 pt-5 dark:text-white flex w-72">
         <span className="text-blue-700 dark:text-blue-300">Rating :</span> ⭐
@@ -42,6 +42,7 @@ export default function MediaCard({
               <button
                 className="inline-flex w-full px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 dark:bg-blue-700 rounded-xl hover:bg-blue-800 dark:hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 justify-center cursor-pointer dark:hover:text-yellow-300 dark:font-semibold items-center mb-5"
                 onClick={() => console.log(`media ID: ${media.id}`)}
+                aria-label="Read More"
               >
                 Read more
                 <svg
@@ -66,6 +67,7 @@ export default function MediaCard({
               <button
                 className="inline-flex w-full px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 dark:bg-blue-700 rounded-xl hover:bg-blue-800 dark:hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 justify-center cursor-pointer dark:hover:text-yellow-300 dark:font-semibold items-center mb-5"
                 onClick={() => console.log(`media ID: ${media.id}`)}
+                aria-label="Read More"
               >
                 Read more
                 <svg
@@ -87,7 +89,10 @@ export default function MediaCard({
             </Link>
           )}
 
-          <button className="inline-flex w-full px-3 py-2 text-sm text-blue-600 dark:text-blue-400 font-medium text-center bg-gray-200 dark:bg-gray-800 rounded-xl focus:ring-4 hover:text-yellow-500 dark:hover:text-yellow-300 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 justify-center items-center cursor-pointer dark:font-semibold ">
+          <button
+            aria-label="Add to Watchlist"
+            className="inline-flex w-full px-3 py-2 text-sm text-blue-600 dark:text-blue-400 font-medium text-center bg-gray-200 dark:bg-gray-800 rounded-xl focus:ring-4 hover:text-yellow-500 dark:hover:text-yellow-300 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 justify-center items-center cursor-pointer dark:font-semibold "
+          >
             Add to Watchlist
           </button>
         </div>

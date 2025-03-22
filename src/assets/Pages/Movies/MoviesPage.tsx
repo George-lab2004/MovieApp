@@ -137,6 +137,7 @@ export default function MoviesPage() {
       }`}
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
+          aria-label="Previous Page"
         >
           <FaArrowLeft className="mr-1 sm:mr-2" /> Previous
         </button>
@@ -158,6 +159,7 @@ export default function MoviesPage() {
             )
           }
           disabled={currentPage >= (totalPages ?? 1)}
+          aria-label="Next Page"
         >
           Next <FaArrowRight className="ml-1 sm:ml-2" />
         </button>

@@ -84,6 +84,7 @@ export default function Searches() {
       }`}
           onClick={handlePrevPage}
           disabled={page === 1}
+          aria-label="Previous"
         >
           <CgArrowLongLeft className="mr-1 sm:mr-2" /> Previous
         </button>
@@ -101,6 +102,7 @@ export default function Searches() {
       }`}
           onClick={handleNextPage}
           disabled={page >= (totalPages ?? 1)}
+          aria-label="Next"
         >
           Next <CgArrowLongRight className="ml-1 sm:ml-2" />
         </button>

@@ -157,6 +157,7 @@ relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px
             <button
               onClick={handleToggleTheme}
               className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+              aria-label="Toggle dark mode"
             >
               {isDarkMode ? "🌙 Dark" : "☀️ Light"}
             </button>
@@ -166,12 +167,14 @@ relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px
 
       {/* Mobile Navbar */}
       <div className="md:hidden z-50 px-5 py-7 flex justify-between items-center bg-white dark:bg-gray-900 dark:text-white shadow-md transition-colors">
-        <h1 className="text-xl font-bold">MoviePulse</h1>
-
+        <Link to="">
+          <h1 className="text-2xl cursor-pointer font-bold">MoviePulse</h1>
+        </Link>
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="flex flex-col gap-1"
+          aria-label="Toggle mobile menu"
         >
           <span
             className={`bg-gray-800 dark:bg-white block h-0.5 w-6 rounded-sm transition-all duration-300 ease-out ${
@@ -256,6 +259,7 @@ relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px
             <button
               onClick={handleToggleTheme}
               className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+              aria-label=" Toggle dark mode"
             >
               {isDarkMode ? "🌙 Dark" : "☀️ Light"}
             </button>
