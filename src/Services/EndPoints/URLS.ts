@@ -42,3 +42,9 @@ export const Actors = {
   Movie: (id: string) => `/movie/${id}/credits`,
   Series: (id: string) => `/tv/${id}/credits`,
 };
+export const Search = {
+  Movie: (query: string) => `/search/movie?query=${query}`,
+  Series: (query: string) => `/search/tv?query=${query}`,
+  Multi: (query: string) => `/search/multi?query=${query}`,
+  People: (query: string) => `/search/person?query=${query}`,
+};

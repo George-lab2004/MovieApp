@@ -1,19 +1,48 @@
-import { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import { JSX, SetStateAction, useEffect, useState } from "react";
+import { FaSearch, FaCaretDown } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { BsTv } from "react-icons/bs";
+import { BiCameraMovie } from "react-icons/bi";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(true); // Default: Dark Mode
+  const [isOpen, setIsOpen] = useState(false); // For mobile menu
+  const [isDarkMode, setIsDarkMode] = useState(true); // For dark mode
+  const [inputValue, setInputValue] = useState(""); // For search input
+  const [selectedCategory, setSelectedCategory] = useState({
+    name: "Movies",
+    link: "/searchMovies",
+  }); // For selected category
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // For category dropdown
+
+  // Categories array
+  const categories = [
+    { name: "Movies", icon: <BiCameraMovie />, link: "/searchMovies" },
+    { name: "TV Series", icon: <BsTv />, link: "/searchSeries" },
+  ];
+
+  // Handle input change
+  const handleInputChange = (event: {
+    target: { value: SetStateAction<string> };
+  }) => {
+    setInputValue(event.target.value);
+  };
+
+  // Handle category selection
+  const handleCategorySelect = (category: {
+    name: string;
+    icon: JSX.Element;
+    link: string;
+  }) => {
+    setSelectedCategory(category);
+    setIsDropdownOpen(false); // Close dropdown after selection
+  };
 
   // Initialize theme on first load
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme");
-
     if (storedTheme) {
       setIsDarkMode(storedTheme === "dark");
     } else {
-      // Default to dark mode
       setIsDarkMode(true);
       localStorage.setItem("theme", "dark");
     }
@@ -41,17 +70,48 @@ export default function Navbar() {
           <Link to="">
             <h1 className="text-2xl cursor-pointer font-bold">MoviePulse</h1>
           </Link>
-          {/* Search Input */}
+
+          {/* Search Input with Dropdown */}
           <div className="relative flex-grow max-w-xl lg:w-96 xl:w-[50rem]">
-            <input
-              type="search"
-              placeholder="Search movies..."
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-full outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
-            />
-            <FaSearch
-              className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400"
-              size={20}
-            />
+            <div className="relative">
+              <input
+                type="search"
+                placeholder={`Search ${selectedCategory.name.toLowerCase()}...`}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-full outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                onChange={handleInputChange}
+                value={inputValue}
+              />
+              {/* Dropdown Icon */}
+              <div
+                className="absolute right-12 top-1/2 -translate-y-1/2 p-2 text-gray-500 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                <FaCaretDown size={20} />
+              </div>
+              {/* Search Icon */}
+              <Link
+                to={`${selectedCategory.link}/${inputValue}`}
+                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-gray-500 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+              >
+                <FaSearch size={20} />
+              </Link>
+            </div>
+
+            {/* Dropdown Menu */}
+            {isDropdownOpen && (
+              <div className="absolute top-14 left-0 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-50">
+                {categories.map((category) => (
+                  <div
+                    key={category.name}
+                    className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                    onClick={() => handleCategorySelect(category)}
+                  >
+                    <span className="mr-2">{category.icon}</span>
+                    <span>{category.name}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Navigation Links & Theme Toggle */}
@@ -68,7 +128,7 @@ export default function Navbar() {
               </Link>
 
               <Link
-                to={"/Series"}
+                to="/Series"
                 className="relative cursor-pointer text-gray-700 dark:text-white hover:text-blue-500 
               before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px] 
               before:bg-blue-600 before:transition-all before:duration-300 
@@ -84,14 +144,7 @@ export default function Navbar() {
               >
                 Watchlist
               </li>
-              <li
-                className="relative cursor-pointer text-gray-700 dark:text-white hover:text-blue-500 
-              before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px] 
-              before:bg-blue-600 before:transition-all before:duration-300 
-              hover:before:w-full hover:before:left-0"
-              >
-                Favourites
-              </li>
+
               <li
                 className="text-red-500 hover:text-red-700 cursor-pointer 
 relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px] before:bg-red-500 before:transition-all before:duration-300 hover:before:w-full hover:before:left-0"
@@ -141,26 +194,58 @@ relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px
       {/* Mobile Menu Dropdown */}
       {isOpen && (
         <div className="md:hidden z-50 absolute top-20 left-0 w-full bg-white dark:bg-gray-900 dark:text-white shadow-md transition-all duration-300 ease-in-out p-5">
+          {/* Mobile Search with Dropdown */}
           <div className="flex justify-center">
             <div className="relative w-11/12 max-w-md">
               <input
                 type="search"
-                placeholder="Search movies..."
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 z-50 rounded-full outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                placeholder={`Search ${selectedCategory.name.toLowerCase()}...`}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-full outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                onChange={handleInputChange}
+                value={inputValue}
               />
-              <FaSearch
-                className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400"
-                size={20}
-              />
+              {/* Dropdown Icon */}
+              <div
+                className="absolute right-12 top-1/2 -translate-y-1/2 p-2 text-gray-500 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                <FaCaretDown size={20} />
+              </div>
+              {/* Search Icon */}
+              <Link
+                to={`${selectedCategory.link}/${inputValue}`}
+                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-gray-500 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+              >
+                <FaSearch size={20} />
+              </Link>
+
+              {/* Dropdown Menu */}
+              {isDropdownOpen && (
+                <div className="absolute top-14 left-0 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-50">
+                  {categories.map((category) => (
+                    <div
+                      key={category.name}
+                      className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                      onClick={() => handleCategorySelect(category)}
+                    >
+                      <span className="mr-2">{category.icon}</span>
+                      <span>{category.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
           {/* Mobile Navigation Links */}
-          <ul className="flex flex-col items-center  gap-4 pt-6 text-lg font-medium">
-            <li className="hover:text-blue-500 cursor-pointer">Movies</li>
-            <li className="hover:text-blue-500 cursor-pointer">TV Series</li>
+          <ul className="flex flex-col items-center gap-4 pt-6 text-lg font-medium">
+            <Link to="/Movies" className="hover:text-blue-500 cursor-pointer">
+              Movies
+            </Link>
+            <Link to="/Series" className="hover:text-blue-500 cursor-pointer">
+              TV Series
+            </Link>
             <li className="hover:text-blue-500 cursor-pointer">Watchlist</li>
-            <li className="hover:text-blue-500 cursor-pointer">Favourites</li>
             <li className="text-red-500 hover:text-red-700 cursor-pointer">
               Logout
             </li>
