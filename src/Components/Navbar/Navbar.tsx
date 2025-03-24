@@ -3,6 +3,7 @@ import { FaSearch, FaCaretDown } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { BsTv } from "react-icons/bs";
 import { BiCameraMovie } from "react-icons/bi";
+import icon from "../../../public/icon.webp";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false); // For mobile menu
@@ -68,7 +69,10 @@ export default function Navbar() {
       <div className="hidden md:block">
         <nav className="flex justify-between items-center px-12 py-5 shadow-md bg-white dark:bg-gray-900 dark:text-white transition-colors">
           <Link to="">
-            <h1 className="text-2xl cursor-pointer font-bold">MoviePulse</h1>
+            <h1 className="text-2xl cursor-pointer font-bold">
+              <img className="w-8 h-8 inline-block mr-2" src={icon} alt="" />
+              MoviePulse
+            </h1>
           </Link>
 
           {/* Search Input with Dropdown */}
@@ -149,12 +153,13 @@ export default function Navbar() {
                 Watchlist
               </li>
 
-              <li
+              <Link
+                to={"/login"}
                 className="text-red-500 hover:text-red-700 cursor-pointer 
 relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px] before:bg-red-500 before:transition-all before:duration-300 hover:before:w-full hover:before:left-0"
               >
-                Logout
-              </li>
+                Login
+              </Link>
             </ul>
 
             {/* Dark Mode Toggle Button */}
@@ -172,7 +177,10 @@ relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px
       {/* Mobile Navbar */}
       <div className="md:hidden z-50 px-5 py-7 flex justify-between items-center bg-white dark:bg-gray-900 dark:text-white shadow-md transition-colors">
         <Link to="">
-          <h1 className="text-2xl cursor-pointer font-bold">MoviePulse</h1>
+          <h1 className="text-2xl cursor-pointer font-bold">
+            <img className="w-8 h-8 inline-block mr-2" src={icon} alt="" />
+            MoviePulse
+          </h1>
         </Link>
         {/* Mobile Menu Button */}
         <button
@@ -257,9 +265,12 @@ relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px
               TV Series
             </Link>
             <li className="hover:text-blue-500 cursor-pointer">Watchlist</li>
-            <li className="text-red-500 hover:text-red-700 cursor-pointer">
-              Logout
-            </li>
+            <Link
+              to="/login"
+              className="text-green-500 hover:text-red-700 cursor-pointer"
+            >
+              login
+            </Link>
           </ul>
 
           {/* Dark Mode Toggle Button */}

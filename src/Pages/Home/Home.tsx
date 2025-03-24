@@ -32,7 +32,7 @@ export default function Home() {
   return (
     <div className="-z-50">
       <div className="mx-2">
-        <AnimatedText text="Dive into World of Movies" />
+        <AnimatedText text="Dive into the World of Movies" />
       </div>
       <div className="my-5">
         {" "}

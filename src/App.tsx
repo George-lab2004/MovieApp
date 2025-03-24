@@ -10,6 +10,9 @@ import SeriessPage from "./Pages/Series/SeriesPage";
 import SearchResults from "./Pages/SearchResults/SearchResultsM";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SearchResultsS from "./Pages/SearchResults/SearchResultsS";
+import Login from "./Pages/Auth/Login";
+import SignUp from "./Pages/Auth/SignUp";
+import ForgetPass from "./Pages/Auth/ForgetPass";
 
 // Lazy-load the Home component using dynamic import()
 const Home = lazy(() => import("./Pages/Home/Home"));
@@ -52,6 +55,18 @@ function App() {
         {
           path: "searchSeries/:inputValue",
           element: <SearchResultsS />,
+        },
+        {
+          path: "login",
+          element: <Login />,
+        },
+        {
+          path: "signup",
+          element: <SignUp />,
+        },
+        {
+          path: "passwd",
+          element: <ForgetPass />,
         },
       ],
     },
