@@ -16,6 +16,7 @@ const Login = () => {
       const user = await signInWithGoogle();
       setSuccess("Successfully logged in!");
       setError("");
+
       console.log("User logged in:", user);
     } catch (error: unknown) {
       const errorMessage =
