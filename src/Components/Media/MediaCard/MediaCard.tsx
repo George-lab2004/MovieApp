@@ -55,16 +55,18 @@ export default function MediaCard({
 
     try {
       if (show) {
-        await Promise.resolve(addMovieToWatchlist(media)); // mimic async if not async
+        await Promise.resolve(addMovieToWatchlist(media)); // Pass the full Similar object
         setMessage("Movie added to watchlist!");
       } else {
-        await Promise.resolve(addTvToWatchlist(media));
+        await Promise.resolve(addTvToWatchlist(media)); // Pass the full Similar object
         setMessage("TV added to watchlist!");
       }
 
-      // Update the localStorage
+      // Update the localStorage with the full media object
       const watchlist = JSON.parse(localStorage.getItem("watchlist") || "[]");
-      watchlist.push(media);
+      if (typeof media !== "number") {
+        watchlist.push(media); // Push the full media object if it's not just an ID
+      }
       localStorage.setItem("watchlist", JSON.stringify(watchlist));
 
       setAdded(true);
@@ -167,15 +169,15 @@ export default function MediaCard({
             ""
           ) : (
             <button
-              onClick={() => handleAddtoWatchlist(media.id)}
+              onClick={() => handleAddtoWatchlist(media)} // Pass the whole media object
               disabled={added || isLoading}
               className={`w-full inline-flex justify-center items-center px-4 py-2 text-sm font-medium rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 transition
-            ${
-              added
-                ? "cursor-not-allowed text-gray-400 bg-gray-300 dark:text-blue-400 dark:bg-zinc-800"
-                : "cursor-pointer text-blue-700 bg-white hover:text-blue-800 hover:bg-blue-50 dark:text-blue-400 dark:bg-zinc-800 dark:hover:text-yellow-300 dark:hover:bg-zinc-700"
-            }
-          `}
+    ${
+      added
+        ? "cursor-not-allowed text-gray-400 bg-gray-300 dark:text-blue-400 dark:bg-zinc-800"
+        : "cursor-pointer text-blue-700 bg-white hover:text-blue-800 hover:bg-blue-50 dark:text-blue-400 dark:bg-zinc-800 dark:hover:text-yellow-300 dark:hover:bg-zinc-700"
+    }
+  `}
             >
               {isLoading ? "Adding..." : added ? "Added" : "Add to Watchlist"}
             </button>

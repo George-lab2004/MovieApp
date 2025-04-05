@@ -11,13 +11,14 @@ interface WatchListItem {
 }
 
 interface WatchListContextType {
-  movieWatchList: WatchListItem[] | undefined;
-  tvWatchList: WatchListItem[] | undefined;
+  watchList: WatchListItem[] | undefined;
   isLoading: boolean;
   error: string | null;
-  addMovieToWatchlist: (movieId: number) => void;
-  addTvToWatchlist: (tvId: number) => void;
+  addMovieToWatchlist: (movie: { id: number }) => Promise<void>;
+  addTvToWatchlist: (tv: { id: number }) => Promise<void>;
   removeFromWatchList: (mediaId: number, mediaType: "movie" | "tv") => void;
+  movieWatchList: WatchListItem[];
+  tvWatchList: WatchListItem[];
 }
 
 export const WatchListContext = createContext<WatchListContextType | null>(
@@ -31,10 +32,7 @@ interface WatchListProviderProps {
 export const WatchListProvider: React.FC<WatchListProviderProps> = ({
   children,
 }) => {
-  const [movieWatchList, setMovieWatchList] = useState<
-    WatchListItem[] | undefined
-  >(undefined);
-  const [tvWatchList, setTvWatchList] = useState<WatchListItem[] | undefined>(
+  const [watchList, setWatchList] = useState<WatchListItem[] | undefined>(
     undefined
   );
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +40,7 @@ export const WatchListProvider: React.FC<WatchListProviderProps> = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [message, setMessage] = useState<string | null>(null);
 
-  const getMovieWatchList = async () => {
+  const getWatchList = async () => {
     const sessionId = localStorage.getItem("session_id");
     const accountId = Number(localStorage.getItem("account_id"));
 
@@ -55,52 +53,43 @@ export const WatchListProvider: React.FC<WatchListProviderProps> = ({
     setError(null);
 
     try {
-      const response = await axiosInstanceURL.get<{ results: WatchListItem[] }>(
-        `https://api.themoviedb.org/3/account/${accountId}/watchlist/movies`,
-        {
-          params: { session_id: sessionId },
-        }
+      const [moviesResponse, seriesResponse] = await Promise.all([
+        axiosInstanceURL.get<{ results: WatchListItem[] }>(
+          WatchList.Movie(accountId),
+          { params: { session_id: sessionId } }
+        ),
+        axiosInstanceURL.get<{ results: WatchListItem[] }>(
+          WatchList.Series(accountId),
+          { params: { session_id: sessionId } }
+        ),
+      ]);
+
+      const moviesWithType = moviesResponse.data.results.map(
+        (item) =>
+          ({
+            ...item,
+            type: "movie",
+          } as WatchListItem)
       );
 
-      setMovieWatchList(response.data.results);
+      const seriesWithType = seriesResponse.data.results.map(
+        (item) =>
+          ({
+            ...item,
+            type: "tv",
+          } as WatchListItem)
+      );
+
+      setWatchList([...moviesWithType, ...seriesWithType]);
     } catch (error) {
-      setError("Failed to fetch movies watchlist");
-      console.error("Error fetching movies watchlist:", error);
+      setError("Failed to fetch watchlist");
+      console.error("Error fetching watchlist:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const getTvWatchList = async () => {
-    const sessionId = localStorage.getItem("session_id");
-    const accountId = Number(localStorage.getItem("account_id"));
-
-    if (!sessionId || isNaN(accountId)) {
-      setError("Invalid session or account ID");
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await axiosInstanceURL.get<{ results: WatchListItem[] }>(
-        `https://api.themoviedb.org/3/account/${accountId}/watchlist/tv`,
-        {
-          params: { session_id: sessionId },
-        }
-      );
-
-      setTvWatchList(response.data.results);
-    } catch (error) {
-      setError("Failed to fetch TV shows watchlist");
-      console.error("Error fetching TV shows watchlist:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const addMovieToWatchlist = async (movieId: number) => {
+  const addMovieToWatchlist = async (movie: { id: number }) => {
     const sessionId = localStorage.getItem("session_id");
     const accountId = Number(localStorage.getItem("account_id"));
 
@@ -117,7 +106,7 @@ export const WatchListProvider: React.FC<WatchListProviderProps> = ({
         `/account/${accountId}/watchlist`,
         {
           media_type: "movie",
-          media_id: movieId,
+          media_id: movie.id,
           watchlist: true,
         },
         {
@@ -134,7 +123,7 @@ export const WatchListProvider: React.FC<WatchListProviderProps> = ({
         throw new Error(response.data.status_message || "Unknown API error");
       }
 
-      await getMovieWatchList();
+      await getWatchList();
       setMessage("Movie added to watchlist!");
     } catch (err) {
       console.error("Error adding movie:", err);
@@ -144,7 +133,7 @@ export const WatchListProvider: React.FC<WatchListProviderProps> = ({
     }
   };
 
-  const addTvToWatchlist = async (tvId: number) => {
+  const addTvToWatchlist = async (tv: { id: number }) => {
     const sessionId = localStorage.getItem("session_id");
     const accountId = Number(localStorage.getItem("account_id"));
 
@@ -161,7 +150,7 @@ export const WatchListProvider: React.FC<WatchListProviderProps> = ({
         `/account/${accountId}/watchlist`,
         {
           media_type: "tv",
-          media_id: tvId,
+          media_id: tv.id,
           watchlist: true,
         },
         {
@@ -178,7 +167,7 @@ export const WatchListProvider: React.FC<WatchListProviderProps> = ({
         throw new Error(response.data.status_message || "Unknown API error");
       }
 
-      await getTvWatchList();
+      await getWatchList();
       setMessage("TV show added to watchlist!");
     } catch (err) {
       console.error("Error adding TV show:", err);
@@ -214,19 +203,14 @@ export const WatchListProvider: React.FC<WatchListProviderProps> = ({
           params: { session_id: sessionId },
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.VITE_TMDB_ACCESS_TOKEN}`,
+            Authorization: `Bearer ${import.meta.env.VITE_TMDB_ACCESS_TOKEN}`,
             accept: "application/json",
           },
         }
       );
 
       if (response.status === 200) {
-        // Refresh movie and TV watchlists separately
-        if (mediaType === "movie") {
-          await getMovieWatchList();
-        } else {
-          await getTvWatchList();
-        }
+        await getWatchList();
       }
     } catch (error) {
       setError("Failed to remove from watchlist");
@@ -237,20 +221,24 @@ export const WatchListProvider: React.FC<WatchListProviderProps> = ({
   };
 
   useEffect(() => {
-    getMovieWatchList();
-    getTvWatchList();
+    getWatchList();
   }, []);
+
+  const movieWatchList =
+    watchList?.filter((item) => item.type === "movie") || [];
+  const tvWatchList = watchList?.filter((item) => item.type === "tv") || [];
 
   return (
     <WatchListContext.Provider
       value={{
-        movieWatchList,
-        tvWatchList,
+        watchList,
         isLoading,
         error,
         addMovieToWatchlist,
         addTvToWatchlist,
         removeFromWatchList,
+        movieWatchList,
+        tvWatchList,
       }}
     >
       {children}
