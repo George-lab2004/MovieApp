@@ -1,9 +1,12 @@
 import { JSX, SetStateAction, useEffect, useState } from "react";
 import { FaSearch, FaCaretDown } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BsTv } from "react-icons/bs";
 import { BiCameraMovie } from "react-icons/bi";
 import icon from "../../../public/icon.webp";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase";
+import { axiosInstanceURL } from "../../Services/EndPoints/URLS";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false); // For mobile menu
@@ -14,7 +17,9 @@ export default function Navbar() {
     link: "/searchMovies",
   }); // For selected category
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // For category dropdown
-
+  const [accountId, setAccountId] = useState(
+    localStorage.getItem("account_id")
+  ); // Track account ID state
   // Categories array
   const categories = [
     { name: "Movies", icon: <BiCameraMovie />, link: "/searchMovies" },
@@ -62,7 +67,56 @@ export default function Navbar() {
       return newMode;
     });
   };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentAccountId = localStorage.getItem("account_id");
+      if (currentAccountId !== accountId) {
+        setAccountId(currentAccountId);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [accountId]);
 
+  const navigate = useNavigate(); // For navigation
+  const handleLogout = async () => {
+    try {
+      // 1. Sign out from Firebase
+      await signOut(auth);
+
+      // 2. Clear all authentication-related data
+      localStorage.clear();
+
+      // 3. Invalidate TMDB session if exists
+      const sessionId = localStorage.getItem("session_id");
+      if (sessionId) {
+        try {
+          await axiosInstanceURL.delete(`/authentication/session`, {
+            data: { session_id: sessionId },
+          });
+        } catch (error) {
+          console.error("TMDB session invalidation failed:", error);
+        }
+      }
+
+      // 4. Update state and redirect
+      setAccountId(null);
+      navigate("/");
+      window.location.reload(); // Ensure complete state reset
+    } catch (error) {
+      console.error("Logout failed:", error);
+      navigate("/");
+    }
+  };
+
+  // Sync account ID with localStorage changes
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setAccountId(localStorage.getItem("account_id"));
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
   return (
     <div>
       {/* Desktop Navbar */}
@@ -144,22 +198,36 @@ export default function Navbar() {
               >
                 TV Series
               </Link>
-              <li
+              <Link
+                to="/watchlist"
                 className="relative cursor-pointer text-gray-700 dark:text-white hover:text-blue-500 
               before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px] 
               before:bg-blue-600 before:transition-all before:duration-300 
               hover:before:w-full hover:before:left-0"
               >
-                Watchlist
-              </li>
-
-              <Link
-                to={"/login"}
-                className="text-red-500 hover:text-red-700 cursor-pointer 
-relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px] before:bg-red-500 before:transition-all before:duration-300 hover:before:w-full hover:before:left-0"
-              >
-                Login
+                Watchlist{" "}
               </Link>
+              {accountId ? (
+                <button
+                  onClick={handleLogout}
+                  className="text-red-500 hover:text-red-700 cursor-pointer 
+                  relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px] 
+                  before:bg-red-500 before:transition-all before:duration-300 
+                  hover:before:w-full hover:before:left-0"
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  className="text-blue-500 hover:text-blue-700 cursor-pointer 
+                  relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px] 
+                  before:bg-blue-500 before:transition-all before:duration-300 
+                  hover:before:w-full hover:before:left-0"
+                >
+                  Login
+                </Link>
+              )}
             </ul>
 
             {/* Dark Mode Toggle Button */}
@@ -264,13 +332,33 @@ relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px
             <Link to="/Series" className="hover:text-blue-500 cursor-pointer">
               TV Series
             </Link>
-            <li className="hover:text-blue-500 cursor-pointer">Watchlist</li>
             <Link
-              to="/login"
-              className="text-green-500 hover:text-red-700 cursor-pointer"
+              to="/watchlist"
+              className="hover:text-blue-500 cursor-pointer"
             >
-              login
-            </Link>
+              Watchlist{" "}
+            </Link>{" "}
+            {accountId ? (
+              <button
+                onClick={handleLogout}
+                className="text-red-500 hover:text-red-700 cursor-pointer 
+                  relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px] 
+                  before:bg-red-500 before:transition-all before:duration-300 
+                  hover:before:w-full hover:before:left-0"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                className="text-blue-500 hover:text-blue-700 cursor-pointer 
+                  relative before:absolute before:bottom-0 before:right-0 before:w-0 before:h-[2px] 
+                  before:bg-blue-500 before:transition-all before:duration-300 
+                  hover:before:w-full hover:before:left-0"
+              >
+                Login
+              </Link>
+            )}
           </ul>
 
           {/* Dark Mode Toggle Button */}

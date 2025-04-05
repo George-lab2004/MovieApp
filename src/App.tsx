@@ -13,7 +13,8 @@ import SearchResultsS from "./Pages/SearchResults/SearchResultsS";
 import Login from "./Pages/Auth/Login";
 import SignUp from "./Pages/Auth/SignUp";
 import ForgetPass from "./Pages/Auth/ForgetPass";
-
+import LogOut from "./Pages/Auth/Logout";
+import Watchlist from "./Pages/WatchList/WatchList";
 // Lazy-load the Home component using dynamic import()
 const Home = lazy(() => import("./Pages/Home/Home"));
 const queryClient = new QueryClient();
@@ -67,6 +68,18 @@ function App() {
         {
           path: "passwd",
           element: <ForgetPass />,
+        },
+        {
+          path: "logOut",
+          element: <LogOut />,
+        },
+        {
+          path: "watchlist",
+          element: (
+            // <ProtuctedRoutes>
+            <Watchlist />
+            // </ProtuctedRoutes>
+          ),
         },
       ],
     },

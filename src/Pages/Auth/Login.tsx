@@ -1,55 +1,176 @@
-import { Link } from "react-router-dom";
-import { signInWithGoogle } from "../../auth";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth } from "../../firebase";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { axiosInstanceURL, TokenSession } from "../../Services/EndPoints/URLS";
 
 const Login = () => {
+  // State for UI feedback and loading
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [tmdbPopup, setTmdbPopup] = useState<Window | null>(null);
+  const navigate = useNavigate();
 
-  const handleGoogleLogin = async () => {
+  // Get TMDB request token for authentication
+  const getRequestToken = async (): Promise<string | null> => {
     try {
-      setIsLoading(true);
-      const user = await signInWithGoogle();
-      setSuccess("Successfully logged in!");
-      setError("");
-
-      console.log("User logged in:", user);
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
-      setError(`Google login failed: ${errorMessage}`);
-      setSuccess("");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const login = async (email: string, password: string) => {
-    try {
-      setIsLoading(true);
-      const response = await signInWithEmailAndPassword(auth, email, password);
-      setSuccess("Login successful!");
-      setError("");
-      console.log("User logged in:", response.user);
+      const response = await axiosInstanceURL.get(TokenSession.Token);
+      const requestToken = response.data.request_token;
+      localStorage.setItem("request_token", requestToken);
+      return requestToken;
     } catch {
-      setError("Error logging in");
-      setSuccess("");
+      setError("Failed to get TMDB token");
+      return null;
+    }
+  };
+
+  // Create TMDB session after user approves access
+  const createSession = async (
+    requestToken: string
+  ): Promise<string | null> => {
+    try {
+      const response = await axiosInstanceURL.post(
+        TokenSession.Session,
+        { request_token: requestToken },
+        { headers: { "Content-Type": "application/json" } }
+      );
+      const sessionId = response.data.session_id;
+      localStorage.setItem("session_id", sessionId);
+      return sessionId;
+    } catch {
+      setError("Failed to create TMDB session");
+      return null;
+    }
+  };
+
+  // Get TMDB account ID after successful authentication
+  const getAccountID = async (): Promise<void> => {
+    try {
+      const sessionId = localStorage.getItem("session_id");
+      if (!sessionId) return;
+
+      const response = await axiosInstanceURL.get(
+        `${TokenSession.AccountID}?session_id=${sessionId}`
+      );
+      localStorage.setItem("account_id", response.data.id.toString());
+    } catch (error) {
+      console.error("Error getting account ID:", error);
+    }
+  };
+
+  // Open popup for user to approve TMDB access
+  const openTmdbApprovalPopup = async (requestToken: string) => {
+    const popup = window.open(
+      `https://www.themoviedb.org/authenticate/${requestToken}`,
+      "tmdbAuth",
+      `width=600,height=700,top=${(window.innerHeight - 700) / 2},left=${
+        (window.innerWidth - 600) / 2
+      }`
+    );
+
+    if (!popup) {
+      setError("Please allow popups for authentication");
+      return;
+    }
+
+    setTmdbPopup(popup);
+
+    // Check every second if user completed authentication
+    const checkInterval = setInterval(async () => {
+      if (popup.closed) {
+        clearInterval(checkInterval);
+        const requestToken = localStorage.getItem("request_token");
+
+        if (requestToken) {
+          const sessionId = await createSession(requestToken);
+          if (sessionId) {
+            await getAccountID(); // Store account ID
+            navigate("/"); // Redirect to home page
+            setSuccess("Login successful!");
+          }
+        }
+      }
+    }, 1000);
+  };
+
+  // Cleanup popup when component unmounts
+  useEffect(() => {
+    return () => {
+      tmdbPopup?.close();
+    };
+  }, [tmdbPopup]);
+
+  // Handle Google login
+  const handleGoogleLogin = async (): Promise<void> => {
+    try {
+      setIsLoading(true);
+      setError("");
+
+      // 1. Authenticate with Google
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      if (!user) throw new Error("Authentication failed");
+
+      // 2. Store Firebase token
+      const token = await user.getIdToken();
+      localStorage.setItem("token", token);
+
+      // 3. Start TMDB authentication flow
+      const requestToken = await getRequestToken();
+      if (requestToken) {
+        await openTmdbApprovalPopup(requestToken);
+        setSuccess("Redirecting to TMDB for approval...");
+      }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Login failed");
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Handle email/password login
+  const login = async (email: string, password: string): Promise<void> => {
+    try {
+      setIsLoading(true);
+      setError("");
+
+      // 1. Authenticate with Firebase
+      const user = (await signInWithEmailAndPassword(auth, email, password))
+        .user;
+      if (!user) throw new Error("Authentication failed");
+
+      // 2. Store Firebase token
+      const token = await user.getIdToken();
+      localStorage.setItem("token", token);
+
+      // 3. Start TMDB authentication flow
+      const requestToken = await getRequestToken();
+      if (requestToken) {
+        await openTmdbApprovalPopup(requestToken);
+        setSuccess("Redirecting to TMDB for approval...");
+      }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Login failed");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Form setup
   const formik = useFormik({
     initialValues: { email: "", password: "" },
     onSubmit: (values) => login(values.email, values.password),
   });
 
   return (
-    <section className="bg-gradient-to-br from-blue-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center min-h-screen p-4">
+    <section className="bg-gradient-to-br from-blue-50 to-gray-300 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center min-h-screen p-4">
       <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
@@ -109,8 +230,9 @@ const Login = () => {
         <button
           onClick={handleGoogleLogin}
           className="w-full mt-4 py-3 bg-red-500 dark:bg-red-600 text-white rounded-lg hover:bg-red-600 dark:hover:bg-red-700 transition-all"
+          disabled={isLoading}
         >
-          Login with Google
+          {isLoading ? "Processing..." : "Login with Google"}
         </button>
 
         <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-4">

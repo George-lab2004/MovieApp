@@ -6,12 +6,10 @@ import "../../Pages/Home/Home.css";
 import { Link } from "react-router-dom";
 import Header from "../Shared/Header";
 import { motion, useInView } from "framer-motion";
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
+import { Dialog, DialogBackdrop, DialogTitle } from "@headlessui/react";
+import React from "react";
+import MediaCard from "../Media/MediaCard/MediaCard";
+
 interface Genre {
   id: number;
   name: string;
@@ -117,7 +115,8 @@ export default function Details({
     visible: { x: 0, opacity: 1, transition: { duration: 0.5 } },
   };
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px 0px" });
+  const isInView = useInView(ref, { once: true, margin: "-50px 0px" });
+  const isInViewtwo = useInView(ref, { once: true, margin: "-100px 0px" });
 
   const [display, setDisplay] = useState(false);
   const [selectedReview, setSelectedReview] = useState<Reviews | null>(null); // Store the selected review
@@ -301,7 +300,7 @@ export default function Details({
               ref={ref}
               variants={castVariants}
               initial="hidden"
-              animate={isInView ? "visible" : "hidden"}
+              animate={isInViewtwo ? "visible" : "hidden"}
               whileHover={{ scale: 1.05 }}
               key={actor.id}
               className="flex flex-col items-center bg-white dark:bg-gray-800 dark:bg-opacity-80 p-4 rounded-xl shadow-lg"
@@ -340,95 +339,7 @@ export default function Details({
       <section className="mt-8">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {visibleSimilar.map((movie) => (
-            <div
-              key={movie.id}
-              className="min-w-[250px] max-w-xs w-full bg-gray-100 dark:bg-zinc-900 border border-gray-300 dark:border-gray-700 rounded-lg shadow h-[500px] flex-shrink-0 mx-2 mb-4"
-            >
-              <img
-                className="rounded-t-lg h-64 w-full object-cover"
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                alt={movie.original_title || movie.name || ""}
-              />
-              <span className="absolute ps-14 pt-5 flex w-72">
-                <span className="text-blue-700 dark:text-blue-300">
-                  Rating :
-                </span>{" "}
-                ⭐ {movie.vote_average}
-              </span>
-              <div className="p-5 pt-16 text-gray-900 dark:text-white text-center">
-                <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-800 dark:text-white">
-                  {(movie.original_title && movie.name
-                    ? movie.original_title.length > 20
-                      ? movie.original_title.slice(0, 20) + "..."
-                      : movie.original_title
-                    : movie.original_title || movie.name || ""
-                  ).length > 20
-                    ? (movie.original_title || movie.name || "").slice(0, 20) +
-                      "..."
-                    : movie.original_title || movie.name || ""}
-                </h5>
-                <div className="flex flex-col">
-                  {show ? (
-                    <Link to={`/MoviesDetailsPage/${movie.id}`}>
-                      <button
-                        className="inline-flex w-full px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 dark:bg-blue-700 rounded-xl hover:bg-blue-800 dark:hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 justify-center cursor-pointer dark:hover:text-yellow-300 dark:font-semibold items-center mb-5"
-                        onClick={() => console.log(`Movie ID: ${movie.id}`)}
-                        aria-label=" Read More"
-                      >
-                        Read more
-                        <svg
-                          className="w-3.5 h-3.5 ms-2"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 14 10"
-                        >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M1 5h12m0 0L9 1m4 4L9 9"
-                          />
-                        </svg>
-                      </button>
-                    </Link>
-                  ) : (
-                    <Link to={`/SeriesDetailsPage/${movie.id}`}>
-                      <button
-                        className="inline-flex w-full px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 dark:bg-blue-700 rounded-xl hover:bg-blue-800 dark:hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 justify-center cursor-pointer dark:hover:text-yellow-300 dark:font-semibold items-center mb-5"
-                        onClick={() => console.log(`Movie ID: ${movie.id}`)}
-                        aria-label=" Read More"
-                      >
-                        Read more
-                        <svg
-                          className="w-3.5 h-3.5 ms-2"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 14 10"
-                        >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M1 5h12m0 0L9 1m4 4L9 9"
-                          />
-                        </svg>
-                      </button>
-                    </Link>
-                  )}
-
-                  <button
-                    className="inline-flex w-full px-3 py-2 text-sm text-blue-600 dark:text-blue-400 font-medium text-center bg-gray-200 dark:bg-gray-800 rounded-xl focus:ring-4 hover:text-yellow-500 dark:hover:text-yellow-300 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 justify-center items-center cursor-pointer dark:font-semibold "
-                    aria-label=" Add to Watchlist"
-                  >
-                    Add to Watchlist
-                  </button>
-                </div>
-              </div>
-            </div>
+            <MediaCard key={movie.id} media={movie} show={show} />
           ))}
         </div>
       </section>
@@ -497,7 +408,13 @@ export default function Details({
 
         {selectedReview && (
           <div className="fixed inset-0 flex items-center justify-center p-4">
-            <DialogPanel className="bg-white dark:bg-gray-900 rounded-lg shadow-xl max-w-3xl w-full p-6 sm:p-8 flex flex-col md:flex-row gap-6 max-h-[90vh] overflow-y-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="bg-white dark:bg-gray-900 rounded-lg shadow-xl max-w-3xl w-full p-6 sm:p-8 flex flex-col md:flex-row gap-6 max-h-[90vh] overflow-y-auto"
+            >
               {/* Avatar */}
               <div className="w-full md:w-1/3 flex flex-col items-center gap-4">
                 {selectedReview?.author_details?.avatar_path ? (
@@ -544,8 +461,9 @@ export default function Details({
 
                 {/* Rating */}
                 {selectedReview.author_details.rating && (
-                  <p className="text-gray-700 dark:text-gray-300 font-medium mt-1">
-                    <AiFillStar /> {selectedReview.author_details.rating}/10
+                  <p className="text-gray-700 dark:text-gray-300 font-medium mt-1 flex items-center">
+                    <AiFillStar className="text-yellow-500 mr-1" />
+                    {selectedReview.author_details.rating}/10
                   </p>
                 )}
 
@@ -554,7 +472,7 @@ export default function Details({
                   {selectedReview.content}
                 </p>
               </div>
-            </DialogPanel>
+            </motion.div>
           </div>
         )}
       </Dialog>

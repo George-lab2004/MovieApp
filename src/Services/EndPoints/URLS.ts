@@ -48,3 +48,34 @@ export const Search = {
   Multi: (query: string) => `/search/multi?query=${query}`,
   People: (query: string) => `/search/person?query=${query}`,
 };
+export const TokenSession = {
+  Token: "/authentication/token/new",
+  Session: "/authentication/session/new",
+  AccountID: "/account",
+};
+// export const WatchList = {
+//   Movie: (accountId: string) => `/account/${accountId}/watchlist/movies`,
+//   Series: (accountId: string) => `/account/${accountId}/watchlist/tv`,
+//   AddMovie: (accountId: string) =>
+//     `/account/${accountId}/watchlist?session_id=${localStorage.getItem(
+//       "session_id"
+//     )}`,
+//   AddSeries: (accountId: string) =>
+//     `/account/${accountId}/watchlist?session_id=${localStorage.getItem(
+//       "session_id"
+//     )}`,
+//   RemoveMovie: (accountId: string, mediaId: string) =>
+//     `/account/${accountId}/watchlist?session_id=${localStorage.getItem(
+//       "session_id"
+//     )}`,
+//   RemoveSeries: (accountId: string, mediaId: string) =>
+//     `/account/${accountId}/watchlist?session_id=${localStorage.getItem(
+//       "session_id"
+//     )}`,
+// };
+export const WatchList = {
+  Movie: (accountId: number) => `/account/${accountId}/watchlist/movies`,
+  Series: (accountId: number) => `/account/${accountId}/watchlist/tv`,
+  Add: (accountId: number) => `/account/${accountId}/watchlist`,
+  Remove: (accountId: number) => `/account/${accountId}/watchlist`,
+};

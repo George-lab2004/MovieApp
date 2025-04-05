@@ -69,7 +69,7 @@ export default function MoviesPage() {
   ];
 
   return (
-    <div className="Movies">
+    <div className="Movies ">
       <div className="mt-5">
         <Header title="Movies" />
       </div>
