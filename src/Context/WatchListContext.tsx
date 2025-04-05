@@ -37,8 +37,6 @@ export const WatchListProvider: React.FC<WatchListProviderProps> = ({
   );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [message, setMessage] = useState<string | null>(null);
 
   const getWatchList = async () => {
     const sessionId = localStorage.getItem("session_id");
@@ -124,9 +122,8 @@ export const WatchListProvider: React.FC<WatchListProviderProps> = ({
       }
 
       await getWatchList();
-      setMessage("Movie added to watchlist!");
-    } catch (err) {
-      console.error("Error adding movie:", err);
+      console.log("Movie added to watchlist!");
+      console.error("Error adding movie:");
       setError("Failed to add movie to watchlist");
     } finally {
       setIsLoading(false);
@@ -168,9 +165,8 @@ export const WatchListProvider: React.FC<WatchListProviderProps> = ({
       }
 
       await getWatchList();
-      setMessage("TV show added to watchlist!");
-    } catch (err) {
-      console.error("Error adding TV show:", err);
+      console.log("TV show added to watchlist!");
+    } catch {
       setError("Failed to add TV show to watchlist");
     } finally {
       setIsLoading(false);
