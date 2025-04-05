@@ -3,11 +3,9 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import { useRef, useState } from "react";
 import AnimatedText from "../Shared/AnimatedText";
 import "../../Pages/Home/Home.css";
-import { Link } from "react-router-dom";
 import Header from "../Shared/Header";
 import { motion, useInView } from "framer-motion";
 import { Dialog, DialogBackdrop, DialogTitle } from "@headlessui/react";
-import React from "react";
 import MediaCard from "../Media/MediaCard/MediaCard";
 
 interface Genre {
@@ -115,7 +113,6 @@ export default function Details({
     visible: { x: 0, opacity: 1, transition: { duration: 0.5 } },
   };
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-50px 0px" });
   const isInViewtwo = useInView(ref, { once: true, margin: "-100px 0px" });
 
   const [display, setDisplay] = useState(false);
@@ -339,7 +336,7 @@ export default function Details({
       <section className="mt-8">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {visibleSimilar.map((movie) => (
-            <MediaCard key={movie.id} media={movie} show={show} />
+            <MediaCard key={movie.id} media={movie} show={show ?? false} />
           ))}
         </div>
       </section>
