@@ -117,7 +117,7 @@ export default function SeriessPage() {
           <Loader />
         ) : (
           Series.map((Series) => (
-            <MediaCard key={Series.id} media={Series} show={true} />
+            <MediaCard key={Series.id} media={Series} show={false} />
           ))
         )}
       </div>

@@ -77,7 +77,7 @@ export default function SeriesDetailsPage() {
   const [error, setError] = useState<string | null>(null); // Handle errors
   const [Similar, setSimilar] = useState<Similar[]>([]);
   const [Reviews, setReviews] = useState<Reviews[]>([]);
-
+  const [show] = useState<boolean>(false);
   useEffect(() => {
     if (!id) {
       setError("Invalid series ID.");
@@ -131,6 +131,7 @@ export default function SeriesDetailsPage() {
 
   return (
     <Details
+      show={show}
       item={seriesDetails}
       actors={actors}
       similar={Similar}
