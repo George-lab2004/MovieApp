@@ -7,8 +7,9 @@ import icon from "../../../public/icon.webp";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase";
 import { axiosInstanceURL } from "../../Services/EndPoints/URLS";
+import { memo } from "react";
 
-export default function Navbar() {
+function Navbar() {
   const [isOpen, setIsOpen] = useState(false); // For mobile menu
   const [isDarkMode, setIsDarkMode] = useState(true); // For dark mode
   const [inputValue, setInputValue] = useState(""); // For search input
@@ -376,3 +377,4 @@ export default function Navbar() {
     </div>
   );
 }
+export default memo(Navbar);

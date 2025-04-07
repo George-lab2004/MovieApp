@@ -1,24 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { axiosInstanceURL, Movies } from "../../Services/EndPoints/URLS";
 import Header from "../Shared/Header";
 import MediaCard from "../Media/MediaCard/MediaCard";
+
 interface Similar {
   original_title?: string;
   poster_path?: string;
   vote_average?: number;
   id: number;
 }
+
 export default function UcomingMovies() {
   const [Movie, setMovie] = useState<Similar[]>([]);
   const [show] = useState(true);
-  async function getMovies() {
+
+  // Using useCallback to memoize the function
+  const getMovies = useCallback(async () => {
     const response = await axiosInstanceURL.get(Movies.Upcoming);
     setMovie(response?.data?.results);
     console.log(response?.data?.results);
-  }
+  }, []); // Empty dependency array ensures it runs once
+
   useEffect(() => {
     getMovies();
-  }, []);
+  }, [getMovies]); // Calls getMovies only when it changes
 
   return (
     <div className="Top-Rated">
@@ -27,12 +32,7 @@ export default function UcomingMovies() {
       </div>
       <div className="relative fixScrollbar flex overflow-x-auto space-x-4 p-5">
         {Movie.map((movie) => (
-          <MediaCard
-            key={movie.id}
-            addedWatchList={true}
-            media={movie}
-            show={show}
-          />
+          <MediaCard key={movie.id} media={movie} show={show} />
         ))}
       </div>
     </div>

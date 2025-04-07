@@ -16,7 +16,6 @@ interface WatchListContextType {
   error: string | null;
   addMovieToWatchlist: (movie: { id: number }) => Promise<void>;
   addTvToWatchlist: (tv: { id: number }) => Promise<void>;
-  removeFromWatchList: (mediaId: number, mediaType: "movie" | "tv") => void;
   movieWatchList: WatchListItem[];
   tvWatchList: WatchListItem[];
 }
@@ -173,49 +172,6 @@ export const WatchListProvider: React.FC<WatchListProviderProps> = ({
     }
   };
 
-  const removeFromWatchList = async (
-    mediaId: number,
-    mediaType: "movie" | "tv"
-  ) => {
-    const sessionId = localStorage.getItem("session_id");
-    const accountId = Number(localStorage.getItem("account_id"));
-
-    if (!sessionId || isNaN(accountId)) {
-      setError("Invalid session or account ID");
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const response = await axiosInstanceURL.post(
-        WatchList.Remove(accountId),
-        {
-          media_type: mediaType,
-          media_id: mediaId,
-          watchlist: false,
-        },
-        {
-          params: { session_id: sessionId },
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_TMDB_ACCESS_TOKEN}`,
-            accept: "application/json",
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        await getWatchList();
-      }
-    } catch (error) {
-      setError("Failed to remove from watchlist");
-      console.error("Error removing from watchlist:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
     getWatchList();
   }, []);
@@ -232,7 +188,6 @@ export const WatchListProvider: React.FC<WatchListProviderProps> = ({
         error,
         addMovieToWatchlist,
         addTvToWatchlist,
-        removeFromWatchList,
         movieWatchList,
         tvWatchList,
       }}
